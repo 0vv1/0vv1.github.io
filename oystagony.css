@@ -1,0 +1,171 @@
+/*file    : oystagony.css
+# brief   : Oyster White on Mahagony Brown Cascading Style Sheet
+# author  : (c) 2019 - 2020 Alexander Puls <https://0vv1.io>
+# license : CC 
+# ------------------------------------------------------------*/
+body {
+	background: #201000;
+	color: #cba;
+	font: 12pt serif;
+	font-family: 'Segoe UI', 'Lucida Grande', Helvetica, sans-serif;
+	line-height: 1.5;
+	margin: 2em;
+	max-width: 100%;
+}
+a {
+	background: #201000;
+	color: #0af;
+	text-decoration: none;
+}
+a:focus, a:hover {
+	text-decoration: underline;
+}
+a:[href]:after {
+    content: ' (' attr(href) ')';
+}
+a:visited {
+	color: #9aaccc;
+	text-decoration: none;
+}
+article {
+    margin-bottom: 3em;
+}
+blockquote {
+	border-left: 5px solid #ccaa77;
+	margin: 1em;
+	padding: 0 1em;
+	background: #202020;
+}
+blockquote, ul, dl {
+    page-break-inside: avoid;
+}
+code {
+	background: #301800;
+	font-family: "Consolas", "Lucida Console", monospace;
+	padding: 1px 5px;
+}
+dt {
+	font-weight: bold;
+}
+h1, h2, h3, h4, h5, h6 {
+	font-weight: normal;
+	line-height: 1em;
+	margin: 1em 0;
+}
+h1 {
+	font-size: 2.25em;
+}
+h2 {
+	font-size: 1.75em;
+}
+h3 {
+	font-size: 1.5em;
+}
+h4, h5, h6 {
+	font-size: 1.25em;
+}
+hr {
+	background-color: #cba;
+	border: 0;
+	height: 1px;
+}
+img {
+	height: auto;
+}
+li + li {
+	margin-top: 3px;
+}
+mark {
+	background: #859900;
+}
+pre {
+	background: #180c06;
+	padding: 5px 10px;
+	white-space: pre-wrap;
+}
+pre code, blockquote code {
+	background: #180c06;
+	padding: 0;
+}
+section {
+    margin-bottom: 3em;
+}
+strong {
+    color: #ccaa77;
+}
+sup {
+	color: #633d31;
+}
+/*  Original Style from ethanschoonover.com/solarized
+	(c) Jeremy Hull <sourdrums@gmail.com>
+    */
+    .hljs {
+        display: block;
+        overflow-x: auto;
+        padding: 0.5em;
+        background: #002b36;
+        color: #839496;
+    }
+    .hljs-comment,
+    .hljs-quote {
+		color: #808080;
+    }
+    /* Green */
+    .hljs-keyword,
+    .hljs-selector-tag,
+    .hljs-addition {
+        color: #859900;
+    }
+    /* Cyan */
+    .hljs-number,
+    .hljs-string,
+    .hljs-meta .hljs-meta-string,
+    .hljs-literal,
+    .hljs-doctag,
+    .hljs-regexp {
+		color: #2aa198;
+	}
+    /* Blue */
+    .hljs-title,
+    .hljs-section,
+    .hljs-name,
+	.hljs-selector-id,
+	.hljs-selector-class {
+		color: #268bd2;
+    }
+    /* Yellow */
+    .hljs-attribute,
+    .hljs-attr,
+    .hljs-variable,
+    .hljs-template-variable,
+    .hljs-class .hljs-title,
+    .hljs-type {
+        color: #b58900;
+    }
+    /* Orange */
+    .hljs-symbol,
+    .hljs-bullet,
+    .hljs-subst,
+    .hljs-meta,
+    .hljs-meta .hljs-keyword,
+    .hljs-selector-attr,
+    .hljs-selector-pseudo,
+    .hljs-link {
+        color: #cb4b16;
+    }
+    /* Red */
+    .hljs-built_in,
+    .hljs-deletion {
+        color: #dc322f;
+    }
+    .hljs-formula {
+        background: #073642;
+    }
+    .hljs-emphasis {
+        font-style: italic;
+    }
+    .hljs-strong {
+        font-weight: bold;
+    }
+
+/*EOF oystagony.css --------------------------------------------------*/
