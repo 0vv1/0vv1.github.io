@@ -1,0 +1,2053 @@
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>man *nix(7) - brief introduction to Linux and BSD | 0vv1</title>
+  <link rel="stylesheet" href="oystagony.css" type="text/css">
+</head>
+<body>
+
+<header>
+<h1>A Brief Introduction to <code>Linux</code> and <code>BSD</code> Based
+  Operating Systems</h1>
+<span class="small" style="font-family: monospace">by Alexander Puls,
+  <time datetime="2020-10-26T08:30+01:00">8:30<small>AM</small>&#8201;CET,
+  26<small>th</small> Oct. <strong>2020</strong></time></span>
+  <span class="small" style="font-family: monospace; float: right">last
+  updated <time datetime="2020-11-25">25<small>th</small>
+  <strong>Nov. 2020</strong></time></span><br />
+<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode">
+  <img src="img/cc-by-nc-sa.svg" alt="license: Creative Commons BY-NC-SA"
+  style="height: 1.1em; width: auto;" /></a>
+</header>
+
+<br />
+<p><big><em>..work in progress.</em></big></p>
+<br />
+<br />
+<h1 id="man-nix"><span style="font-family: monospace"><a
+  href="#cmd-man">man</a> <strong><a
+  href="https://en.wikipedia.org/wiki/Unix-like">*nix</a></strong>(<a
+  href="https://man7.org/linux/man-pages/man7/">7</a>)</span></h1>
+<section>
+<h1 id="100">Basics</h1>
+<hr />
+<!--p>All one needs to take action and perform relevant tasks on every unix-like
+  system is to invoke a <a href="#lang-shell"><code>shell</code></a> of ones
+  choice in a virtual terminal, either emulated or directly on the console of
+  the operating system. (<em>i.&#8201;e.</em> after non-graphical login).</p-->
+
+<p>It all starts with the two least dangerous commands:</p>
+<br />
+
+<blockquote><mark>note:</mark> Both commands take either absolute or relative
+  paths as an argument. An absolute path always starts with
+  <a href="#dir-root"><code>/</code></a>, <em>i.&#8201;e.</em> the root of the
+  filesystem. A relative path starts inside the (current)
+  <a href="#cmd-pwd"><code>working directory</code></a>.</blockquote>
+
+<dl>
+<dt><a href="#cmd-ls"><dfn>cmd <code
+  class="heading">ls</code></a></dfn>
+  <strong>l</strong>i<strong>s</strong>ts directory content</dt>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-cd">cmd <strong><code>cd</code></strong></dfn>
+  <strong>c</strong>hanges current (working) <strong>d</strong>irectory</dt>
+<dd> So-called <a href="#lang-shell"><code>shell builtin</code></a>,
+  <em>i.&#8201;e.</em> provided by the
+  <a href="#lang-shell"><code>shell</code></a> itself.</dd>
+<dd>Other than the obvious parameters:
+  <ul>
+  <li><kbd>cd</kbd> all alone and <kbd>cd ~</kbd> switch to the
+  <code>home directory</code> of the invoking user as specified by its
+  <code>${<span id="cmd-login" class="hl-var">HOME</span>}</code> variable
+  (set by cmd <strong><code>login</code></strong> according to the respective
+  entry in <a href="#file-passwd"><code>/etc/passwd</code></a>)</li>
+  <li><kbd>cd -</kbd> returns to the last
+  <a href="#cmd-pwd"><code>working directory</code></a> (<em>i.&#8201;e.
+  where one came from</em>)</li>
+  <li><kbd>cd ..</kbd> changes the
+  <a href="#cmd-pwd"><code>working directory</code></a> to the directory
+  'above', since <code>..</code> is a link to the parent directory,
+  <code>.</code> a link to the current dir (<kbd>cd .</kbd> 'changes' from the
+  current dir to the current one <em>&#8211;i.&#8201;e. you stay where you
+  are</em>)</li></ul></dd>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/cd.1p.html">
+  <code>man cd(1p)</code></a> as part of the
+  <a href="#std-posix"><code>POSIX</code></a> Programmer’s Manual at
+  man7.org</li>
+  <li><a href="https://man.netbsd.org/cd.1"><code>man cd(1)</code></a>
+  at man.Net<strong>BSD</strong>.org
+  </li></ul></dd>
+<dd><br /></dd>
+</dl>
+
+<blockquote>
+<mark>from here on:</mark> <strong>every character counts</strong>, a
+<a href="#lang-shell"><code>shell</code></a> and its environment is not a just
+a programming language and the most exhaustive IDE one can imagine,
+it's a complete interface to the underlying operating system and every
+reachable remote one<br />
+<div style="text-align: right"><strong>&#8211; think before you
+<kbd>RETURN</kbd>!</strong></div>
+</blockquote>
+</section>
+
+<section>
+<h1 id="101">System
+  <span style="white-space:
+  nowrap">Architecture<sup><small>&#8201;&#8470;101</small></sup></span></h1>
+<hr />
+<article>
+<h1 id="101.1">Determine and Configure Hardware
+    <span style="white-space:
+	nowrap">Settings<sup><small>&#8201;&#8470;101.1</small></sup></span></h1>
+<dl>
+<dt><dfn id="cmd-cat">cmd <code><span
+  class="hl-cmt">/bin/</span><strong>cat</strong></code></dfn>
+  con<strong>cat</strong>enates files and prints
+  them on <code>stdout</code> (<strong>st</strong>an<strong>d</strong>ard
+  <strong>out</strong>put)</span></dt>
+<dd>Easiest call: <kbd><span class="hl-key">cat</span>
+  <mark>[FILE[S]]</mark></kbd>
+  prints the (vertically concatenated) content of given FILE(s) to
+  <code>stdout</code> (<em>i.&#8201;e. (usually)
+  the terminal</em>).</dd>
+<dd>One may want to redirect the output via <code>&gt;</code>
+  (which <strong>overwrites</strong>(!) the content of a given TARGET FILE,
+  if it is not empty (<em>e.&#8201;g. new</em>)) or <code>&gt;&gt;</code>
+  (attaches output to given TARGET FILE).
+  <ul><li>synopsis: <kbd><span class="hl-key">cat</span>
+  <mark>[FILE[S]] [<span class="hl-key">&gt;|&gt;&gt;</span> [TARGETFILE]</span></kbd></li>
+<blockquote><mark>notice:</mark>
+one may redirect an empty string with <code>></code> to a not yet existing
+file in order to create it with no content<br />
+(<span class="hl-val">0</span> byte)
+<pre><code><span class="hl-cmt">$</span> <kbd><span class="hl-key">></span>NEWFILE</kbd>
+<span class="hl-cmt">$</span> <kbd><span class="hl-key">ls</span> -l NEWFILE</kbd>
+<samp>-rw-r----- 1 <span class="hl-var">user group</span> <span class="hl-val">0</span> Nov 15 13:39 NEWFILE</samp></code></pre>
+(same goes for command <a href="#cmd-touch"><code>touch</code></a>:
+<kbd>touch</kbd>ing a non-existing file leads to creation)
+</blockquote>
+</ul></dd>
+<dd>Online resources:
+<ul><li><a href="https://man7.org/linux/man-pages/man1/cat.1.html"><code>man
+  cat(1)</code></a> at man7.org</li>
+<li><a href="https://man.netbsd.org/cat.1"><code>man
+  cat(1)</code></a> at man.NetBSD.org</li>
+</ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="dir-sys">dir <code>/<strong>sys</strong>/</code></dfn>
+  provides information about kernel objects
+  <span class="anot"><sup><em><strong>&#8201;Linux</strong>
+  specific</em></sup></span></dt> 
+<dd>Via the <code>sysfs</code> filesystem.</dd>
+<dd><em>Similiar functionality to the <strong>sysctl</strong> mechanism in
+  <strong>BSD</strong> operating systems.</em></dd>
+<dd>Dynamically generated.</dd>
+<dd>Represents the driver modules of the running kernel.</dd>
+<dd>Online resource:
+  <a href="https://man7.org/linux/man-pages/man5/sysfs.5.html"><code>man
+  sysfs(5)</code></a> at man7.org<dd>
+<dd><br /></dd>
+
+<dt><dfn id="dir-proc">dir <code>/<strong>proc</strong>/</code></dfn>
+  provides information about processes via the <code>procfs</code>
+  filesystem</dt>
+<dd>Subdirectory for every running <code>PID</code> (process ID).</dd>
+<dd>Subsequent dirs, <em>e.&#8201;g.</em>: <code>cpuinfo/</code>,
+  <code>dma/</code>, <code>interrupts/</code>, <code>ioports/</code>,
+  <code>meminfo/</code>, <code>modules/</code>.</dd>
+<dd>Boot parameter for the kernel in <code>/proc/cmdline</code>.</dd>
+<dd>Online resources:
+  <ul>
+  <li><a href="https://man7.org/linux/man-pages/man5/proc.5.html"><code>man
+    proc(5)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/mount_procfs.8"><code>man mount
+    procfs(8)</code></a> at man.NetBSD.org (about attaching an instance of
+    <code>procfs</code> to the filesystem)</li>
+  </ul><dd>
+<dd><br /></dd>
+
+<dt><dfn id="dir-dev">dir <code>/<strong>dev</strong>/</code></dfn>
+  is the location for interfaces to the various device drivers</dt>
+<dd>Every instance is represented as a single file, <em>e.&#8201;g.</em>:
+  <code>/dev/tty[0-9]&#42;</code><em> being the terminals
+  (<strong>t</strong>ele<strong>ty</strong>pe)</em>,
+  <code>/dev/random</code><em> being an entropy generator</em>,
+  <code>/dev/[s]?da1</code> <em>the first partition on the first SCSI
+  disk et&#8201;c.</em></dd>
+<dd><br /></dd>
+
+<dt><dfn id="daemon-dbus">daemon <strong><code>dbus</code></strong></dfn>
+  used for IPC (<strong>i</strong>nter <strong>p</strong>rocess
+  <strong>c</strong>ommunication)</dt>
+<dd>Focus on desktop applications (<strong>d</strong>esktop
+  <strong>bus</strong>).</dd>
+<dd>Gets its information from the <strong>daemon
+  <code id="daemon-hald">hald</code></a></strong>, representing
+  <code>HAL</code> (<strong>h</strong>ardware <strong>a</strong>bstraction
+  <strong>l</strong>ayer), <em>e.&#8201;g. when hotplug
+  <a href="#dir-dev">devices</a> get attached</em>.</dd>
+<dd><br /></dd>
+
+<div class="frame">
+<dt><dfn id="cmd-lsmod">cmd <strong><code>lsmod</code></strong></dfn>
+  shows the status of modules in the Linux kernel
+  <span class="anot"><sup><em><strong>&#8201;Linux</strong>
+  specific</em></sup></span></dt> 
+<dd>.. and nothing more (just prints out a formated
+  <code>/proc/modules</code>).</dd>
+<dd>Online resource:
+  <a href="https://man7.org/linux/man-pages/man8/lsmod.8.html"><code>man
+  lsmod(8)</code></a> at man7.org</dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-modstat">cmd <strong><code>modstat</code></strong></dfn>
+  displays the status of modules in the kernel
+  <span class="anot"><sup><em><strong class="hl-netbsd">&#8201;NetBSD</strong>
+  specific</em></sup></span></dt>
+<dd> .. with lots of information (if needed).</dd>
+<dd>Online resources:
+<ul><li><a href="https://man.netbsd.org/modstat.8"><code>man
+  modstat(8)</code></a> at man.NetBSD.org</li>
+  <li><a href="https://man.openbsd.org/OpenBSD-5.6/modstat.8"><code>man
+  modstat(8)</code></a> at man.OpenBSD.org (until <span style="white-space:
+  nowrap"><strong>v5.6</strong>)<sup><em><strong
+  class="hl-openbsd">&#8201;OpenBSD</strong></em></sup></span></li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-kldstat">cmd <strong><code>kldstat</code></strong></dfn>
+  displays the status of the <strong>d</strong>ynamic <strong>k</strong>ernel
+  <strong>l</strong>inker <span class="anot"><sup><em><strong
+  class="hl-freebsd">&#8201;FreeBSD</strong>
+  specific</em></sup></span></dt>
+<dd><em>AKA</em> modules.</dd>
+<dd>Online resource:
+  <a href="https://www.freebsd.org/cgi/man.cgi?kldstat(8)"><code>man
+  kldstat(8)</code></a> at FreeBSD.org</dd>
+</div>
+<br />
+
+<dt><dfn id="cmd-modprobe">cmd <strong><code>modprobe</code></strong></dfn>
+  adds and removes modules from the Linux kernel
+  <span class="anot"><sup><em><strong>&#8201;Linux</strong>
+  specific</em></sup></span></dt>
+<dd>Expects an up-to-date <code>modules.dep.bin</code> (to be generated by
+  <a id="cmd-depmod"><code>depmod</code></a>).</dd>
+<dd><code>modprobe MODULE[S]</code> loads the given module(s), no path is
+  needed.</dd>
+<dd>Further options:
+  <ul>
+  <li><code>-r</code> <strong>r</strong>emoves the given module</li>
+  <li><code>--show-depends</code> shows dependencies of given modules
+  (<em>*DUH*</em>)</li></ul>
+<dd>Online resource:
+  <a href="https://man7.org/linux/man-pages/man8/modprobe.8.html"><code>man
+  modprobe(8)</code></a> at man7.org</dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-lspci">cmd <code><span
+  class="hl-cmt">/usr/bin/</span><strong>lspci</strong></code></dfn>
+  <strong>l</strong>i<strong>s</strong>ts all
+  <strong>PCI</strong> devices
+  <span class="anot"><sup><em><strong>&#8201;Linux</strong>
+  specific</em></sup></span></dt>
+<dd>Useful options:
+  <ul><li><code>-v</code>, <code>-vv</code>, <code>-vvv</code> sets
+  <strong>v</strong>erbosity level</li>
+  <li><code>-x</code>, <code>-xxx</code>, <code>-xxxx</code> shows
+  he<strong>x</strong>adecimal dump of the configuration space</li>
+  <li><code>-k</code> shows which <strong>k</strong>ernel drivers and modules
+  are used for the device</li>
+  <li><code>-m</code> prints device data in a <strong>m</strong>achine readable
+  format</li></ul></dd>
+<dd>Online resource:
+  <a href="https://man7.org/linux/man-pages/man8/lspci.8.html"><code>man
+  lspci(8)</code></a> at man7.org</dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-lsusb">cmd <strong><code>lsusb</code></strong></dfn>
+  <strong>l</strong>i<strong>s</strong>ts
+  <strong>USB</strong> devices
+  <span class="anot"><sup><em><strong>&#8201;Linux</strong>
+  specific</em></sup></span></dt>
+<dd>Online resource:
+  <a href="https://man7.org/linux/man-pages/man8/lsusb.8.html"><code>man
+  lsusb(8)</code></a> at man7.org</dd>
+<dd><br /></dd>
+</dl></article>
+
+<article>
+<h1 id="101.2">Boot the <span style="white-space:
+  nowrap">System<sup><small>&#8201;&#8470;101.2</small></sup></span></h1>
+<dl>
+<dt><a href="#cmd-dmesg"><dfn>cmd <code
+  class="heading">dmesg</code></a></dfn> prints and controls the kernel ring 
+  buffer</dt>
+<dd><br /></dd>
+
+<dt><a href="#cmd-journalctl"><dfn>cmd <code
+  class="heading">journalctl</code></a></dfn> queries log files provided by
+  <a href="#svc-systemd">systemd</a></dt>
+<dd><br /></dd>
+
+<dt><dfn id="bios"><strong><code>BIOS</code></strong></dfn>
+  meaning the <strong>b</strong>asic
+  <strong>I</strong>/<strong>O</strong> <strong>s</strong>ystem (firmware
+  interface)</dt>
+<dd>In Ancient Greek βίος means 'Live'.</dd>
+<dd><br /></dd>
+
+<dt><dfn id="uefi"><strong><code>UEFI</code></strong></dfn>
+  is another interface between the OS and the firmware of a platform</dt>
+<dd>In Ancient Greek υεφι means nothing.</dd>
+<dd>Developed by Intel<sup>&#174;</sup> and intended to be a successor of the
+'<em>old</em>' BIOS.</dd>
+<dd>Online resource: Hundreds of MBs of official
+  <a href="https://software.intel.com/content/www/us/en/develop/articles/unified-extensible-firmware-interface.html">documentation</code></a>
+  at Intel.com. &#128514;</dd>
+<dd><br /></dd>
+
+<dt><dfn id="svc-sysvinit">svc <strong><code>SysVinit</code></strong></dfn>
+  originally being the <a href="daemon-init">init</a> system of
+  <code>System V</code></dt>
+<dd>Online resource:
+  <a href="https://wiki.gentoo.org/wiki/Sysvinit"><code>wiki article</code></a>
+  at wiki.gentoo.org</dd>
+<dd><br /></dd>
+
+<dt><dfn id="bootloader"><strong><code>bootloader</code></strong></dfn>
+  is a program being started by the firmware to load the kernel into memory</dt>
+<dd><br /></dd>
+
+<dt><a href="#201"><dfn><code class="heading">kernel</code></a>
+  is the core of an OS, resident in memory at runtime</dfn></dt>
+<dd><br /></dd>
+
+<dt><dfn id="">file <strong><code>initramfs</code></strong></dfn>
+  is a compressed archive containing a filesystem</dt>
+<dd>Can be mounted to <a href="#dir-root"><code>/</code></a> at boot time.</dd>
+<dd><br /></dd>
+
+<dt><a href="#daemon-init"><dfn>daemon <code
+  class="heading">init</code></a></dfn> is the first process of the system</dt>
+<dd><br /></dd>
+
+<dt><dfn id="svc-systemd">svc <strong><code>systemd</code></strong></dfn>
+  originally was an init daemon<span
+  class="anot"><sup><em><strong>&#8201;Linux</strong>
+  specific</em></sup></span></span></dt>
+<dd>Promoted as universal system control service of all Linux based operating
+  systems.</dd>
+<dd>Online resource: A few hundred
+  <a href="https://www.freedesktop.org/software/systemd/man/"><code>man
+  pages</code></a> at freedesktop.org. &#128514;</dd>
+<dd><br /></dd>
+</dl></article>
+
+<article>
+<h1 id="101.3">Runlevels & <span style="white-space:
+  nowrap">Shutdown<sup><small>&#8201;&#8470;101.3</small></sup></span></h1>
+<dl>
+<dt><dfn id="file-inittab">file <code>/etc/<strong>inittab</strong></code></dfn>
+  is the main configuration file for SysV-style init programs</dt>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-shutdown">cmd <code><span
+  class="hl-cmt">/sbin/</span><strong>shutdown</strong></code></dfn>
+  halts, powers-off or reboots the machine</span></dt>
+<dd>Option <code>-k</code> generates only a message (like
+  <a href="#cmd-wall"><code>wall</code></a>) and suppresses any new logins
+  5 minutes (<em>default</em>) before the given time.</dd>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man8/shutdown.8.html">
+  <code>man shutdown(8)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/shutdown.8"><code>man 
+  shutdown(8)</code></a> at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="deamon-init">daemon <strong><code>init</code></strong></dfn>
+  is the first process of the system (<code>PID 1</code>)</dt>
+<dd>Controls all other daemons.</dd>
+<dd>Online resource:
+  <a href="https://man.netbsd.org/init.8"><code>man
+  init(8)</code></a> at man.NetBSD.org</dd>
+<dd><br /></dd>
+
+<dt><dfn id="dir-init">dir <code>/etc/<strong>init</strong>.d/</code> (or
+  <code>/etc/rc.d/</code>)</dfn>
+  is the directory for storing init scripts of traditional SysV-style init
+  systems</dt>
+<dd>Online resource:
+  <a href="https://man.netbsd.org/rc.d.8"><code>man
+  rc(8)</code></a> at man.NetBSD.org</dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-telinit">cmd <strong><code>telinit</code></strong></dfn>
+  tells init to change SysV runlevel</dt>
+<dd>Takes the runlevel no. (as configured in <code>/etc/inittab</code>)
+  as an argument.</dd>
+<dd>Online resource:
+  <a href="https://man.netbsd.org/init.8"><code>man
+  init(8)</code></a> at man.NetBSD.org</dd>
+<dd><br /></dd>
+
+<dt><a href="#svc-systemd"><dfn>daemon <code
+  class="heading">systemd</code></a></dfn></dt>
+<dd><br /></dd>
+
+<dt><a href="#svc-systemd"><dfn>cmd <code 
+  class="heading">systemctl</code></a></dfn></dt>
+<dd><br /></dd>
+
+<dt><a href="#svc-systemd"><dfn>dir <code 
+  class="heading">/etc/systemd/</code></a></dfn></dt>
+<dd><br /></dd>
+
+<dt><a href="#svc-systemd"><dfn>dir <code 
+  class="heading">/usr/lib/systemd/</code></a></dfn></dt>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-wall">cmd <strong><code>wall</code></strong></dfn>
+  writes a message to users</dt>
+<dd>Option <code>-g</code> limits message printing to specified
+  <code><strong>g</strong>roup</code>.</dd>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/wall.1.html">
+  <code>man wall(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/wall.1"><code>man wall(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+</dl>
+</article>
+</section>
+
+<section>
+<h1 id="102">Linux Installation and Package <span style="white-space:
+  nowrap">Management<sup><small>&#8201;&#8470;102</small></sup></span></h1>
+<hr />
+<article>
+<h1 id="102.1">Design Hard Disk
+    <span style="white-space:
+	nowrap">Layout<sup><small>&#8201;&#8470;102.1</small></sup></span></h1>
+<dl>
+<dt><dfn id="fhs"><strong><code>FHS</code></strong></dfn>
+  (<strong>F</strong>ilesystem <strong>H</strong>irarchy
+  <strong>S</strong>tandard)</dt>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man7/hier.7.html">
+  <code>man hier(7)</code></a> at man7.org</li>
+  <li><a href="https://refspecs.linuxfoundation.org/fhs.shtml"><code>
+  specification</code></a>
+  at linuxfoundation.org</li></ul></dd>
+<dd><blockquote><mark class="hl-orange">attention:</mark> The
+  <a href="#svc-systemd"><code>systemd</code></a> project reinterpretes the
+  filesystem hierachy. Kinda up-to-date documentation of '<em>their</em>'
+  specification can be found on platforms using this service under
+  <a href="https://man7.org/linux/man-pages/man7/file-hierarchy.7.html">man
+  file-hierachy(7)</a> (copy at man7.org).</blockquote></dd>
+<dd><br /></dd>
+</dl>
+
+<p>Important directories on Unix-like platforms:</p>
+<ul>
+<li id="dir-root">dir <strong><code>/</code></strong> (root)</li>
+<li id="dir-boot">dir <code>/<strong>boot</strong>/</code> holding static data
+  of the <a href="#bootloader">bootloader</a></li>
+<li id="dir-efi">dir <code>/boot/<strong>efi</strong>/</code> being the favorite
+  <span id="esp">mountpoint of the <code>EFI System Partition</code>
+  (<strong>ESP</strong>)</span> on platforms using
+  <a href="#uefi">UEFI</a> and might be shared with other systems,
+  <em>e.&#8201;g. <code><abbr
+  title="Microsoft&#174;&#8201;Windows&#174;">MSW</abbr></code></em></li>
+<li id="dir-etc">dir <code>/<strong>etc</strong>/</code> holding the main
+  configuration files of the local machine</li>
+<li id="dir-var">dir <code>/<strong>var</strong>/</code> holding
+  <strong>var</strong>iable data (of significance for platforms providing
+  servers)</li></ul>
+<br />
+
+<dl>
+<dt><dfn id="swap"><strong><code>swap</code></strong></dfn><dt>
+<dd><br /></dd>
+
+<dt><dfn id="mountpoint"><strong><code>mountpoint</code></strong></dfn>
+  indicates a directory at which a <code>block device</code> is mounted<dt>
+<dd><br /></dd>
+
+<dt><dfn id="partition"><strong><code>partition</code></strong></dfn><dt>
+<dd><br /></dd>
+</dl>
+</article>
+
+<article>
+<h1 id="102.2">Install a Boot <span style="white-space:
+	nowrap">Manager<sup><small>&#8201;&#8470;102.2</small></sup></span></h1>
+
+<h2 id="dir-grub">dir</strong>
+    <code>/boot/<strong>grub</strong>/</code> <em>et&#8201;c.</em> &
+	associated commands as an example</h2>
+<ul>
+<li id="cmd-grub-install"><code>grub-install</code> (re)installs the bootloader
+  to the <span id="mbr"><code>MBR</code></span> (<strong>m</strong>aster
+  <strong>b</strong>oot <strong>r</strong>ecord)</li>
+<li><span id="cmd-grub-mkconfig"><code>grub-mkconfig</code></span> (re)writes
+  the configuration in <strong>file</strong>
+  <span id="file-grub"><code>/boot/grub/grub.cfg</code></span><ul>
+<li>templates from <code>/etc/default/grub</code> and below
+  <code>/etc/grub.d/</code></li></ul></li>
+<li><em>legacy files</em>: <span id="file-menu.lst"><code>menu.lst</code></span>
+  and <span id="file-grub.conf"><code>grub.conf</code></span></li>
+<li>grub shell
+<ul>
+<li><em>e. g. to boot manually</em>:
+<pre><code class="truncb"><span class="hl-cmt">grub&gt;</span> <kbd><span
+class="hl-key">set root</span>='(<span
+class="hl-val">hd0,0</span>)'</kbd>     <span
+class="hl-cmt"># 1st partition on 1st harddisk</span></code></pre>
+<small>sets the place to find the <code><a 
+href="#201">kernel</a></code> (and its <code>initrd</code> if necessary)</small>
+<pre><code class="trunctb"><span class="hl-cmt">grub&gt;</span> <kbd><span
+class="hl-key">kernel</span> <span
+class="hl-val">/boot/vmlinuz-</span><mark>[VERSION]</mark> <span
+class="hl-key">root</span>=<span
+class="hl-val">/dev/sd</span><mark>[a-z][1-9]*</mark></span></kbd>
+</code></pre>
+<small>specifies two parameters: the <a
+href="#201">kernel</a> file and the partition on which the <a
+href="#dir-root">root filesystem</a> resides</small>
+<pre><code class="trunct"><span class="hl-cmt">grub&gt;</span> <kbd><span
+class="hl-key">initrd</span> <span
+class="hl-val">/boot/initrd.img-</span><mark>[VERSION]</mark></kbd>
+<span class="hl-cmt">grub&gt;</span> <kbd><span
+class="hl-key">boot</span></kbd>
+</code></pre></li>
+</ul></li>
+<li><code>/boot/grub/device.map</code>
+  holds the assignments to the GRUB devices</li></ul>
+<br />
+</article>
+
+<article>
+<h1 id="102.3">Manage Shared <span style="white-space:
+	nowrap">Libraries<sup><small>&#8201;&#8470;102.3</small></sup></span></h1>
+<dl>
+<dt><dfn id="cmd-ldd">cmd <strong><code>ldd</code></strong></dfn>
+  prints shared object dependencies (<em>AKA</em> libraries)</dt>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/ldd.1.html">
+  <code>man ldd(1)</code></a> at man7.org</li>
+  <li><a href="https://man.openbsd.org/ldd"><code>man ldd(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-ldconfig">cmd <strong><code>ldconfig</code></strong></dfn>
+  configures/rebuilds the library cache</dt>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man8/ldconfig.8.html">
+  <code>man ldconfig(8)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/ldconfig.8"><code>man
+  ldconfig(8)</code></a> at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="dir-ld">dir <code>/etc/<strong>ld</strong>.so.conf</code></dfn>
+  stores the information of the run-time link-editor</dt>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man8/ld.so.8.html">
+  <code>man ld.so(8)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/ld.so.conf.5"><code>man
+  ld.so.conf(5)</code></a> at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="var-ld-library-path">var
+  <strong><code>LD_LIBRARY_PATH</code></strong></dfn> stores directories in
+  which to search for `ELF` libraries at execution time</dt>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man8/ld.so.8.html">
+  <code>man ld.so(8)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/ld.1"><code>man ld(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+</dl>
+</article>
+
+<article>
+<h1 id="102.4">Use Debian Package <span style="white-space:
+	nowrap">Management<sup><small>&#8201;&#8470;102.4
+	<span style="float: right"><small><em>Debian/GNU/<strong>Linux</strong>
+	specific</em></small></small></sup></span></span></h1>
+<p>Important files and commands:</p>
+<ul><li>file <code>/etc/apt/sources.list</code></li>
+<li>cmd <code>dpkg</code></li>
+<li>cmd <code>dpkg-reconfigure</code></li>
+<li>cmd <code>apt-get</code></li>
+<li>cmd <code>apt-cache</code></li></ul>
+<p><br /></p>
+</article>
+  
+<article>
+<h1 id="102.5">Use RPM and YUM Package <span style="white-space:
+	nowrap">Management<sup><small>&#8201;&#8470;102.5
+	<span style="float: right"><small><em>Red Hat <strong>Linux</strong>
+	specific</em></small></small></sup></span></span></h1>
+<p>Important commands and files:</p>
+<ul><li>cmd <code>rpm</code></li>
+<li>cmd <code>rpm2cpio</code></li>
+<li>file <code>/etc/yum.conf</code></li>
+<li>dir <code>/etc/<strong>yum.repos.d</strong>/</code></li>
+<li>cmd <code>yum</code>
+  <ul><li><code>provides</code> shows which package holds a given program
+  </li></ul></li>
+<li>cmd <code>zypper</code></li></ul>
+<p><br /></p>
+</article>
+  
+<article>
+<h1 id="102.6">Linux as a Virtualization <span style="white-space:
+	nowrap">Guest<sup><small>&#8201;&#8470;102.6</small></sup></span></h1>
+<p>Buzzwords:</p>
+<ul><li><code>Virtual machine</code></li>
+<li><code>Linux container</code></li>
+<li><code>Application container</code></li>
+<li><code>Guest drivers</code></li></ul>
+
+<dl>
+<dt><a href="#cmd-ssh"><dfn> <code
+  class="heading">SSH host keys</code></a></dfn></dt>
+<dd><br /></dd>
+
+<dt><a href="#daemon-dbus"><dfn> <code
+  class="heading">DBus machine ID</code></a></dfn></dt>
+<dd><br /></dd>
+</dl>
+</article>
+</section>
+
+<section>
+<h1 id="103">GNU and Unix
+  <span style="white-space:
+	nowrap">Commands<sup><small>&#8201;&#8470;103</small></sup></span></h1>
+<hr />
+
+<article>
+<h1 id="103.1">Work on the Command <span style="white-space:
+	nowrap">Line<sup><small>&#8201;&#8470;103.1</small></sup></span></h1>
+<dl>
+<dt><dfn id="cmd-echo">cmd <strong><code>echo</code></strong></dfn>
+  writes arguments to <code>stdout</code></dt>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/echo.1.html">
+  <code>man echo(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/echo.1"><code>man echo(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-env">cmd <strong><code>env</code></strong></dfn>
+  runs a program in a modified environment</dt>
+<dd><a href="#lang-shell"><code>shell builtin</code></a>.</dd>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/env.1.html">
+  <code>man env(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/env.1"><code>man env(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-export">cmd <strong><code>export</code></strong></dfn>
+  exports shell variables to the following processes</dt>
+<dd><a href="#lang-shell"><code>shell builtin</code></a>.</dd>
+<dd>Option <code>-f</code> refers to <a
+  href="#cmd-function"><code>functions</code></a>, <code>-n</code> removes
+  attribute</dd>
+<dd>Online resource:
+  <a href="https://man7.org/linux/man-pages/man1/export.1p.html">
+  <code>man export(1p)</code></a> at man7.org</dd>
+<dd><br /></dd>
+
+<dt><dfn id="pwd">cmd <strong><code>pwd</code></strong></dfn>
+  <strong>p</strong>rints <strong>w</strong>orking
+  <strong>d</strong>irectory</dt>
+<dd><a href="#lang-shell"><code>shell builtin</code></a>.</dd>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/pwd.1.html">
+  <code>man pwd(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/pwd.1"><code>man pwd(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-set">cmd <strong><code>set</code></strong></dfn>
+  lists <a href="#lang-shell"><code>shell</code></a> variables</dt>
+<dd><a href="#lang-shell"><code>shell builtin</code></a>.</dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-unset">cmd <strong><code>unset</code></strong></dfn>
+  deletes <a href="#lang-shell"><code>shell</code></a> variables</dt>
+<dd><a href="#lang-shell"><code>shell builtin</code></a>.</dd>
+<dd>Online resource:
+  <a href="https://man7.org/linux/man-pages/man1/unset.1p.html"><code>man 
+  unset(1p)</code></a> at man7.org</dd>
+<dd><br /></dd>
+
+
+<dt><a href="#cmd-type"><dfn>cmd
+  <code class="heading">type</code></a></dfn>
+  indicates how a given command would be interpreted</dt>
+<dd><br /></dd>
+
+<dt><a href="#cmd-which"><dfn>cmd
+  <code class="heading">which</code></a></dfn>
+  locates a command in the users <code>$PATH</code></dt>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-man">cmd <strong><code>man</code></strong></dfn>
+  interacts with the system reference <strong>man</strong>uals (interface)</dt>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/man.1.html">
+  <code>man man(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/man.1"><code>man man(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd>Offline resource: <code>man man</code>
+  <ul><li>defaulting to <code>section 1</code>
+  (<em>more precise would be <code>man 1 man</code> or, if your system has
+  another <a href="#var-lang"><code>$LANG</code></a> then an English one and
+  you want to hit the original (in section 1), type
+  </em><kbd><span class="hl-key">man</span> -L en 1 <span 
+  class="hl-val">man</span></kbd>)</li></ul></dd>
+<dd id="cmd-whatis"> cmd <code>whatis</code> is closely related:
+  <ul><li>displays one-line manual page descriptions</li>
+  <li>lists all available man pages regarding the given term(s) including
+  its/their man page section(s), which might be several</li>
+  <li><em>e. g.</em>:
+<pre><code class="small"><span class="hl-cmt">$</span> <kbd><span class="hl-key">whatis</span> <span class="hl-val">whatis ed man</span></kbd>
+<samp>whatis (1)           - display one-line manual page descriptions</samp>
+<samp>ed (1)               - line-oriented text editor</samp>
+<samp>man (1)              - an interface to the on-line reference manuals</samp>
+<samp>man (7)              - macros to format man pages</samp></code></pre></li>
+  <li>online resources:
+  <ul>
+  <li><a href="https://man7.org/linux/man-pages/man1/whatis.1.html"><code>man
+  whatis(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/whatis.1"><code>man
+  whatis(1)</code></a> at man.NetBSD.org</li></ul></li></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-uname">cmd <strong><code>uname</code></strong></dfn> prints
+  a few system informations (<strong>u</strong>nix <strong>name</strong>)
+  <strong></strong></dt>
+<dd>Appeared first in PWB UNIX<sup>&#174;</sup> 1.0
+  (<strong>P</strong>rogrammers <strong>W</strong>ork<strong>b</strong>ench)
+  from <a href="https://bell-labs.com/">AT&T Bell Laboratories</a>.</dd>
+<dd>The most prominent option <code>-r</code> gives the kernel
+  <strong>r</strong>elease no. as a string.<ul>
+  <li><em>useful when e.&#8201;g.
+  <a href="#201.2">compiling/patching a kernel</a>, identifying kernel modules
+  et&#8201;c.</em></li></ul></dd>
+<dd>Option <code>-a</code> gives <strong>a</strong>ll information it can
+  gather.</dd>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/uname.1.html">
+  <code>man uname(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/uname.1"><code>man uname(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-history">cmd <strong><code>history</code></strong></dfn>
+  manages a command history on most (<em>i.&#8201;e. more feature
+  rich</em>) <a href="#cmd-shell"><code>shells</code></a></dt>
+<dd>Mostly delivered as a <code>shell built-in</code>.</dd>
+</article>
+
+<article>
+<h1 id="103.2">Process Text Streams Using <span style="white-space:
+	nowrap">Filters<sup><small>&#8201;&#8470;103.2</small></sup></span></h1>
+<dl>
+
+<dt><a href="#cmd-bzcat"><dfn>cmd
+  <code class="heading">bzcat</code></a></dfn>
+  decompresses files to stdout</dt>
+<dd><br /></dd>
+
+<dt><a href="#cmd-cat"><dfn>cmd
+  <code class="heading">cat</code></a></dfn>
+  con<strong>cat</strong>enates files</dt>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-cut">cmd <strong><code>cut</code></strong></dfn>
+  removes sections from each line of files</dt>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/cut.1p.html">
+  <code>man cut(1p)</code></a> and
+  <a href="https://man7.org/linux/man-pages/man1/cut.1.html"><code>man
+  cut(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/cut.1"><code>man cut(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-head">cmd <strong><code>head</code></strong></dfn>
+  outputs the first part of files</dt>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/head.1p.html">
+  <code>man head(1p)</code></a> and
+  <a href="https://man7.org/linux/man-pages/man1/head.1.html"><code>man
+  head(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/head.1"><code>man head(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-less">cmd <strong><code>less</code></strong></dfn>
+  is the opposite of more (pager)</dt>
+<dd>Basically less is <a
+  href="https://man7.org/linux/man-pages/man1/more.1p.html">
+  <code>more(1p)</code></a>, but kinda more.
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/less.1.html">
+  <code>man less(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/less.1"><code>man less(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<div class="frame">
+<dt><dfn id="cmd-md5sum">cmd <strong><code>md5sum</code></strong></dfn>
+  computes and checks MD5 message digest
+  <span class="anot"><sup><em><strong>&#8201;Linux</strong>
+  specific</em></sup></span></dt>
+<dd>Online resource:
+  <a href="https://man7.org/linux/man-pages/man1/md5sum.1.html"><code>man
+  md5sum</code></a> at man7.org</dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-cksum">cmd <strong><code>cksum</code></strong></dfn>
+  displays file checksums and block counts
+  <span class="anot"><sup><em><strong>&#8201;BSD</strong>
+  specific</em></sup></span></dt>
+  <dd>To be used as <kbd class="hl-key">md5</kbd>, <kbd><span
+  class="hl-key">sum</span> -a <span class="hl-val">MD5</span></kbd> or
+  <kbd><span class="hl-key">cksum</span> -a
+  <span class="hl-val">MD5</span></kbd> to display MD5 checksums.</dd>
+<dd>Online resources:
+  <ul><li><a href="https://man.netbsd.org/cksum.1">
+  <code>man cksum(1)</code></a> at man.NetBSD.org</li>
+  <li><a href="https://man.openbsd.org/md5"><code>man md5(1)</code></a>
+  at man.OpenBSD.org</li></ul></dd>
+</div>
+<br />
+  
+<dt><dfn id="cmd-nl">cmd <strong><code>nl</code></strong></dfn>
+  <strong>n</strong>umbers <strong>l</strong>ines of files</dt>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/nl.1p.html">
+  <code>man nl(1p)</code></a> and
+  <a href="https://man7.org/linux/man-pages/man1/nl.1.html"><code>man
+  nl(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/nl.1"><code>man nl(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-od">cmd <strong><code>od</code></strong></dfn>
+  <strong>d</strong>umps files in <strong>o</strong>ctal and other formats</dt>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/od.1p.html">
+  <code>man od(1p)</code></a> and
+  <a href="https://man7.org/linux/man-pages/man1/od.1.html"><code>man
+  od(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/od.1"><code>man od(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-paste">cmd <strong><code>paste</code></strong></dfn>
+  merges lines of files</dt>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/paste.1p.html">
+  <code>man paste(1p)</code></a> and
+  <a href="https://man7.org/linux/man-pages/man1/paste.1.html"><code>man
+  paste(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/paste.1"><code>man paste(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><a href="#cmd-sed"><dfn>cmd
+  <code class="heading">sed</code></a></dfn>
+  is the <strong>s</strong>tream <strong>ed</strong>itor for filtering and
+  transforming text</dt>
+<dd><br /></dd>
+
+<div class="frame">
+<dt><dfn id="cmd-sha256sum">cmd <strong><code>sha256sum</code></strong></dfn>
+  computes and checks SHA256 message digest
+  <span class="anot"><sup><em><strong>&#8201;Linux</strong>
+  specific</em></sup></span></dt>
+<dd>Online resource:
+  <a href="https://man7.org/linux/man-pages/man1/sha256sum.1.html"><code>man
+  sha256sum(1)</code></a> at man7.org</dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-cksum">cmd <strong><code>cksum</code></strong></dfn>
+  displays file checksums and block counts
+  <span class="anot"><sup><em><strong>&#8201;BSD</strong>
+  specific</em></sup></span></dt>
+  <dd>To be used as <kbd class="hl-key">sha256</kbd>, <kbd><span
+  class="hl-key">sum</span> -a <span class="hl-val">SHA256</span></kbd> or
+  <kbd><span class="hl-key">cksum</span> -a
+  <span class="hl-val">SHA256</span></kbd> to display SHA256 checksums.</dd>
+<dd>Online resources:
+  <ul><li><a href="https://man.netbsd.org/cksum.1">
+  <code>man cksum(1)</code></a> at man.NetBSD.org</li>
+  <li><a href="https://man.openbsd.org/sha256"><code>man sha256(1)</code></a>
+  at man.OpenBSD.org</li></ul></dd>
+</div>
+<br />
+
+<div class="frame">
+<dt><dfn id="cmd-sha512sum">cmd <strong><code>sha512sum</code></strong></dfn>
+  computes and checks SHA512 message digest
+  <span class="anot"><sup><em><strong>&#8201;Linux</strong>
+  specific</em></sup></span></dt>
+<dd>Online resource:
+  <a href="https://man7.org/linux/man-pages/man1/sha512sum.1.html"><code>man
+  sha512sum(1)</code></a> at man7.org</dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-cksum">cmd <strong><code>cksum</code></strong></dfn>
+  displays file checksums and block counts
+  <span class="anot"><sup><em><strong>&#8201;BSD</strong>
+  specific</em></sup></span></dt>
+  <dd>To be used as <kbd class="hl-key">sha512</kbd>, <kbd><span
+  class="hl-key">sum</span> -a <span class="hl-val">sha512</span></kbd> or
+  <kbd><span class="hl-key">cksum</span> -a
+  <span class="hl-val">SHA512</span></kbd> to display SHA512 checksums.</dd>
+<dd>Online resources:
+  <ul><li><a href="https://man.netbsd.org/cksum.1">
+  <code>man cksum(1)</code></a> at man.NetBSD.org</li>
+  <li><a href="https://man.openbsd.org/sha512"><code>man sha512(1)</code></a>
+  at man.OpenBSD.org</li></ul></dd>
+</div>
+<br />
+
+<dt><dfn id="cmd-sort">cmd <strong><code>sort</code></strong></dfn>
+  sorts lines of text files</dt>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/sort.1p.html">
+  <code>man sort(1p)</code></a> and
+  <a href="https://man7.org/linux/man-pages/man1/sort.1.html"><code>man
+  sort(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/sort.1"><code>man sort(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-split">cmd <strong><code>split</code></strong></dfn>
+  splits a file into pieces</dt>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/split.1p.html">
+  <code>man split(1p)</code></a> and
+  <a href="https://man7.org/linux/man-pages/man1/split.1.html"><code>man
+  split(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/split.1"><code>man split(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-tail">cmd <strong><code>tail</code></strong></dfn>
+  outputs the last part of files</dt>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/tail.1p.html">
+  <code>man tail(1p)</code></a> and
+  <a href="https://man7.org/linux/man-pages/man1/tail.1.html"><code>man
+  tail(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/tail.1"><code>man tail(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-tr">cmd <strong><code>tr</code></strong></dfn>
+  <strong>tr</strong>anslates or deletes characters</dt>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/tr.1p.html">
+  <code>man tr(1p)</code></a> and
+  <a href="https://man7.org/linux/man-pages/man1/tr.1.html"><code>man
+  tr(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/tr.1"><code>man tr(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-uniq">cmd <strong><code>uniq</code></strong></dfn>
+  reports or omits repeated lines</dt>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/uniq.1p.html">
+  <code>man uniq(1p)</code></a> and
+  <a href="https://man7.org/linux/man-pages/man1/uniq.1.html"><code>man
+  uniq(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/uniq.1"><code>man uniq(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-wc">cmd <strong><code>wc</code></strong></dfn>
+  prints newline, <strong>w</strong>ord and byte <strong>c</strong>ounts for
+  each file</dt>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/wc.1p.html">
+  <code>man wc(1p)</code></a> and
+  <a href="https://man7.org/linux/man-pages/man1/wc.1.html"><code>man
+  wc(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/wc.1"><code>man wc(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><a href="#cmd-xzcat"><dfn>cmd
+  <code class="heading">xzcat</code></a></dfn>
+  compresses or decompresses <a href="#cmd-xz"><code>.xz</code></a> and
+  <code>.lzma</code> files</dt>
+<dd><br /></dd>
+
+<dt><a href="#cmd-zcat"><dfn>cmd
+  <code class="heading">zcat</code></a></dfn>
+  compresses or expands files</dt>
+<dd>Belongs to <a href="#cmd-gzip"><code>gzip</code></a>.</dd>
+<dd><br /></dd>
+</dl>
+</article>
+
+<article>
+<h1 id="103.3">Perform Basic File
+<span style="white-space:
+  nowrap">Management<sup><small>&#8201;&#8470;103.3</small></sup></span></h1>
+<dl>
+<dt><dfn id="cmd-cp">cmd <strong><code>cp</code></strong></dfn>
+  <strong>c</strong>o<strong>p</strong>ies files (and directories)</dt>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/cp.1p.html">
+  <code>man cp(1p)</code></a> and
+  <a href="https://man7.org/linux/man-pages/man1/cp.1.html"><code>man
+  cp(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/cp.1"><code>man cp(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><a href="#cmd-find"><dfn>cmd
+  <code class="heading">find</code></a></dfn>
+  searches for files in a directory hirarchy</dt>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-mkdir">cmd <strong><code>mkdir</code></strong></dfn>
+  <strong>m</strong>a<strong>k</strong>es <strong>dir</strong>ectories</dt>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/mkdir.1p.html">
+  <code>man mkdir(1p)</code></a> and
+  <a href="https://man7.org/linux/man-pages/man1/mkdir.1.html"><code>man
+  mkdir(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/mkdir.1"><code>man mkdir(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-mv">cmd <strong><code>mv</code></strong></dfn>
+  <strong>m</strong>o<strong>v</strong>es files</dt>
+<dd>And thus is used to rename files too.</dd>
+<dd>Works on directories either, since they are treated like files
+(of type 'directory').</dd>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/mv.1p.html">
+  <code>man mv(1p)</code></a> and
+  <a href="https://man7.org/linux/man-pages/man1/mv.1.html"><code>man
+  mv(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/mv.1"><code>man mv(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><a href="#cmd-ls"><dfn>cmd <code
+  class="heading">ls</code></a></dfn>
+  <strong>l</strong>i<strong>s</strong>ts directories</dt>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-rm">cmd <strong><code>rm</code></strong></dfn>
+  <strong>r</strong>e<strong>m</strong>oves directory entries</dt>
+<dd>Works recursively with options <code>-r</code> or <code>-R</code>.</dd>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/rm.1p.html">
+  <code>man rm(1p)</code></a> and
+  <a href="https://man7.org/linux/man-pages/man1/rm.1.html"><code>man
+  rm(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/rm.1"><code>man rm(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-rmdir">cmd <strong><code>rmdir</code></strong></dfn>
+  <strong>r</strong>e<strong>m</strong>oves <strong>dir</strong>ectories</dt>
+<dd>.. if they are empty.</dd>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/rmdir.1p.html">
+  <code>man rmdir(1p)</code></a> and
+  <a href="https://man7.org/linux/man-pages/man1/rmdir.1.html"><code>man
+  rmdir(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/rmdir.1"><code>man rmdir(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-touch">cmd <strong><code>touch</code></strong></dfn>
+  changes file access and modification times</dt>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/touch.1p.html">
+  <code>man touch(1p)</code></a> and
+  <a href="https://man7.org/linux/man-pages/man1/touch.1.html"><code>man
+  touch(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/touch.1"><code>man touch(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-tar">cmd <strong><code>tar</code></strong></dfn>
+  is the <strong>t</strong>ape <strong>ar</strong>chiver</dt>
+<dd>Important options:<ul>
+  <li><code>c</code> <strong>c</strong>ompresses,</li>
+  <li><code>x</code> e<strong>x</strong>tracts,</li>
+  <li><code>z</code> uses <a
+  href="#cmd-gzip"><code>g<strong>z</strong>ip</code></a> algorithm,</li>
+  <li><code>j</code> uses <a
+  href="#cmd-bzip"><code>bzip2</code></a> algorithm,</li>
+  <li><code>J</code> uses <a
+  href="#cmd-xz"><code>xz</code></a> algorithm,</li>
+  <li><code>t</code> shows <strong>t</strong>able of content,</li> 
+  <li><code>w</code> brings an interactive mode up,</li>
+  <li><code>f</code> specifies an archive name</li></ul>
+<dd><em>E.&#8201;g.</em>: <kbd><span class="hl-key">tar</span> xzf
+  <mark class="hl-var">ARCHIVE</mark></kbd> e<strong>x</strong>tracts a
+  <a href="#cmd-gzip"><code>g<strong>z</strong>ip</code></a> compressed
+  <strong>f</strong>ile named <span class="hl-var">ARCHIVE</span> to the
+  current directory (if the output dir is not <strong>c</strong>hanged by
+  option <code>-C</code>)</dd>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/tar.1.html"><code>man
+  tar(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/tar.1"><code>man tar(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-cpio">cmd <strong><code>cpio</code></strong></dfn>
+  <strong>c</strong>o<strong>p</strong>ies files <strong>i</strong>n and
+  <strong>o</strong>ut of archives</dt>
+<dd>Ancient (appeared first in 1977 in PWB UNIX<sup>&#174;</sup>).</dd>
+<dd>Has certain limitations.</dd>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/pax.1p.html"><code>man
+  pax(1p)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/cpio.1"><code>man cpio(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-dd">cmd <strong><code>dd</code></strong></dfn>
+  converts and copies files</dt>
+<dd>Works on block level, thus can <strong>d</strong>ump
+  <strong>d</strong>isks too.</dd>
+<dd>Common syntax: <kbd><span class="hl-key">dd</span>
+  <span class="hl-key">if</span>=<mark
+  class="hl-var"><strong>I</strong>NPUT-<strong>F</strong>ILE</mark>
+  <span class="hl-key">of</span>=<mark
+  class="hl-var"><strong>O</strong>UTPUT-<strong>F</strong>ILE</mark>
+  [ .. ]</kbd></dd>
+<dd>More options with the same syntax (<em>i.&#8201;e.</em>
+  <code>bs=BLOCK-SIZE</code>).</dd>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/dd.1p.html">
+  <code>man dd(1p)</code></a> and
+  <a href="https://man7.org/linux/man-pages/man1/dd.1.html"><code>man
+  dd(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/dd.1"><code>man dd(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-file">cmd <strong><code>file</code></strong></dfn>
+  determines file type</dt>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/file.1p.html">
+  <code>man file(1p)</code></a> and
+  <a href="https://man7.org/linux/man-pages/man1/file.1.html"><code>man
+  file(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/file.1"><code>man file(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-gzip">cmd <strong><code>gzip</code></strong></dfn>
+  compresses files</dt>
+<dd>Uses the Lempel-Ziv coding.</dd>
+<dd id="cmd-gunzip">cmd <code><strong>gunzip</strong></code> decompresses
+  files (basically is <code>gzip -d</code> or <code>--decompress</code>).</dd>
+<dd id="cmd-zcat">cmd <strong><code>zcat</code> or <code>gzcat</code></strong>
+  decompresses files to <code>stdout</code> (<code>gzip -c</code> (or
+  <code>--stdout</code>) and <code>-d</code>(<code>--decompress</code>) are
+  used).</dd>
+<dd>Online resource:
+  <a href="https://man.netbsd.org/gzip.1"><code>man
+  gzip(1)</code></a> at man.NetBSD.org</dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-bzip">cmd <code><strong>bzip</strong>2</code></dfn>
+  compresses files</dt>
+<dd>Uses the Burrows-Wheeler block sorting text compression algorithm.</dd>
+<dd id="cmd-bunzip">cmd <code><strong>bunzip</strong></code> decompresses
+  files (basically is <code>bzip2 -d</code> or <code>--decompress</code>).</dd>
+<dd id="cmd-bzcat">cmd <strong><code>bzcat</code></strong> decompresses files
+  to <code>stdout</code> (<code>bzip2 -c</code> or <code>--stdout</code>).</dd>
+<dd>Online resource:
+  <a href="https://man.netbsd.org/bzip2.1"><code>man
+  bzip2(1)</code></a> at man.NetBSD.org</dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-xz">cmd <strong><code>xz</code></strong></dfn>
+  is a general-purpose data compression tool</dt>
+<dd>Native file format is <code>.xz</code>.
+<dd id="cmd-unxz"><code>unxz</code> is equivalent to <code>xz -d</code>.</dd>
+<dd id="cmd-xzcat"><code>xzcat</code> is equivalent to
+  <code>xz -c -d</code>.</dd>
+<dd><code>lzma</code> is equivalent to <code>xz --format=lzma</code>.</dd>
+<dd><code>unlzma</code> is equivalent to <code>xz --format=lzma -d</code>.</dd>
+<dd><code>lzcat</code> is equivalent to <code>xz --format=lzma -cd</code>.</dd>
+<dd>Online resource:
+  <a href="https://man.netbsd.org/xz.1"><code>man
+  xz(1)</code></a> at man.NetBSD.org</dd>
+<dd><br /></dd>
+
+<dt><a href="#lang-shell"><dfn><code class="heading">file
+  globbing</code></a></dfn></dt>
+</dl>
+</article>
+
+<article>
+<h1 id="103.4">Use Streams, Pipes and <span style="white-space:
+	nowrap">Redirects<sup><small>&#8201;&#8470;103.4</small></sup></span></h1>
+<dl>
+<dt><dfn id="cmd-tee">cmd <strong><code>tee</code></strong></dfn>
+  duplicates <code>stdin</code> (standard input)</dt>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/tee.1p.html">
+  <code>man tee(1p)</code></a> and
+  <a href="https://man7.org/linux/man-pages/man1/tee.1.html"><code>man
+  tee(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/tee.1"><code>man tee(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-xargs">cmd <strong><code>xargs</code></strong></dfn>
+  constructs <strong>arg</strong>ument lists and invokes
+  (e<strong>x</strong>ecutes) argument</dt>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/xargs.1p.html">
+  <code>man xargs(1p)</code></a> and
+  <a href="https://man7.org/linux/man-pages/man1/xargs.1.html"><code>man
+  xargs(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/xargs.1"><code>man xargs(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+</dl>
+</article>
+
+<article>
+<h1 id="103.5">Create, Monitor and Kill <span style="white-space:
+	nowrap">Processes<sup><small>&#8201;&#8470;103.5</small></sup></span></h1>
+<dl>
+<dt><a href="#lang-shell"><dfn><code class="heading">&</code></a></dfn></dt>
+<dd><br /></dd>
+
+<dt><a href="#lang-shell"><dfn>cmd
+  <code class="heading">bg</code></a></dfn></dt>
+<dd><br /></dd>
+
+<dt><a href="#lang-shell"><dfn>cmd
+  <code class="heading">fg</code></a></dfn></dt>
+<dd><br /></dd>
+
+<dt><a href="#lang-shell"><dfn>cmd
+  <code class="heading">jobs</code></a></dfn></dt>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-kill">cmd <strong><code>kill</code></strong></dfn>
+  terminates or signals processes</dt>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/kill.1p.html">
+  <code>man kill(1p)</code></a> and
+  <a href="https://man7.org/linux/man-pages/man1/kill.1.html"><code>man
+  kill(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/kill.1"><code>man kill(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-nohup">cmd <strong><code>nohup</code></strong></dfn>
+  invokes a command imune to <strong>h</strong>ang<strong>up</strong>s</dt>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/nohup.1p.html">
+  <code>man nohup(1p)</code></a> and
+  <a href="https://man7.org/linux/man-pages/man1/nohup.1.html"><code>man
+  nohup(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/nohup.1"><code>man nohup(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><a href="#cmd-ps"><dfn>cmd
+  <code class="heading">ps</code></a></dfn>
+  reports a <strong>s</strong>napshot of the current
+  <strong>p</strong>rocesses</dt>
+<dd><br /></dd>
+
+<dt><a href="#cmd-top"><dfn>cmd
+  <code class="heading">top</code></a></dfn>
+  displays processes</dt>
+<dd><br /></dd>
+
+<div class="frame">
+<dt><dfn id="cmd-free">cmd <strong><code>free</code></strong></dfn>
+  displays amount of free and 'used' memory<span
+  class="anot"><sup><em><strong>&#8201;Linux</strong>
+  specific</em></sup></span></dt>
+<dd>Online resource:
+  <a href="https://man7.org/linux/man-pages/man1/free.1.html"><code>man
+  free(1)</code></a> at man7.org</dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-vmstat">cmd <strong><code>vmstat</code></strong></dfn>
+  reports <strong>v</strong>irtual <strong>m</strong>emory
+  <strong>stat</strong>istics<span
+  class="anot"><sup><em><strong>&#8201;BSD</strong>
+  specific</em></sup></span></dt>
+<dd>Online resource:
+  <a href="https://man.netbsd.org/vmstat.1"><code>man vmstat(1)</code></a>
+  at man.NetBSD.org</dd>
+</div>
+<br />
+
+<dt><dfn id="cmd-pstat">cmd <strong><code>pstat</code></strong></dfn>
+  displays system data structures
+  <span class="anot"><sup><em><strong>&#8201;BSD</strong>
+  specific</em></sup></span></dt>
+<dd>Online resource:
+  <a href="https://man.netbsd.org/pstat.8"><code>man
+  pstat(8)</code></a> at man.NetBSD.org</dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-systat">cmd <strong><code>systat</code></strong></dfn>
+  displays system statistics in a full screen view
+  <span class="anot"><sup><em><strong>&#8201;BSD</strong>
+  specific</em></sup></span></dt>
+<dd>Online resource:
+  <a href="https://man.netbsd.org/systat.1"><code>man
+  systat(1)</code></a> at man.NetBSD.org</dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-uptime">cmd <strong><code>uptime</code></strong></dfn>
+  shows how long the system has been running since last boot</dt>
+<dd>Option <code>-p</code> pretties output (<em>on Linux</em>).</dd>
+<dd>Online resources:<ul>
+  <li><a href="https://man7.org/linux/man-pages/man1/uptime.1.html"><code>man
+  uptime(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/uptime.1"><code>man uptime(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-pgrep">cmd <strong><code>pgrep</code></strong></dfn>
+  finds processes by name</dt>
+<dd>Online resources:<ul>
+  <li><a href="https://man7.org/linux/man-pages/man1/pgrep.1.html"><code>man
+  pgrep(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/pkill.1"><code>man pkill(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-pkill">cmd <strong><code>pkill</code></strong></dfn>
+  signals processes by name</dt>
+<dd>Online resources:<ul>
+  <li><a href="https://man7.org/linux/man-pages/man1/pgrep.1.html"><code>man
+  pgrep(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/pkill.1"><code>man pkill(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-killall">cmd <strong><code>killall</code></strong></dfn>
+  kills processes by name <span
+  class="anot"><sup><em><strong>&#8201;Linux</strong> &
+  <strong>FreeBSD</strong> specific</em></sup></span></dt>
+  <dd>Or kills <strong>all</strong>(!) processes that user is able to kill
+  (<em><strong>System V</strong></em>).</dd>
+<dd>Online resources:<ul>
+  <li><a href="https://man7.org/linux/man-pages/man1/killall.1.html"><code>man
+  killall(1)</code></a> at man7.org</li>
+  <li><a
+  href="https://www.freebsd.org/cgi/man.cgi?query=killall&manpath=current">
+  <code>man killall(1)</code></a> at FreeBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-watch">cmd <strong><code>watch</code></strong></dfn>
+  executes a program periodically
+  <span class="anot"><sup><em><strong>&#8201;Linux</strong>
+  common</em></sup></span></dt>
+<dd>.. and shows the output fullscreen.</dd>
+<dd>Part of the <a href="https://gitlab.com/procps-ng/procps">procps-ng</a>
+  project (installable on other Unix-like systems too).</dd>
+<dd>Online resource:
+  <a href="https://man7.org/linux/man-pages/man1/watch.1.html"><code>man
+  watch(1)</code></a> at man7.org</dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-screen">cmd <strong><code>screen</code></strong></dfn>
+  is a screen manager with terminal emulation
+  <span class="anot"><sup><em><strong>&#8201;Linux</strong>
+  specific</em></sup></span></dt>
+<dd>Online resource:
+  <a href="https://man7.org/linux/man-pages/man1/screen.1.html"><code>man
+  screen(1)</code></a> at man7.org</dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-tmux">cmd <strong><code>tmux</code></strong></dfn>
+  is the <strong>t</strong>erminal
+  <strong>mu</strong>ltiple<strong>x</strong>er</dt>
+<dd>Online resources:<ul>
+  <li><a href="https://man7.org/linux/man-pages/man1/tmux.1.html"><code>man
+  tmux(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/tmux.1"><code>man tmux(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+</dl>
+
+<article>
+<h1 id="103.6">Modify Process Execution <span style="white-space:
+  nowrap">Priorities<sup><small>&#8201;&#8470;103.6</small></sup></span></h1>
+<dl>
+<dt><dfn id="cmd-nice">cmd <strong><code>nice</code></strong></dfn>
+  runs a program with an altered scheduling priority</dt>
+<dd>Online resources:<ul>
+  <li><a href="https://man7.org/linux/man-pages/man1/nice.1.html"><code>man
+  nice(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/nice.1"><code>man nice(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><a href="#cmd-ps"><dfn>cmd
+<code class="heading">ps</code></a></dfn>
+  reports a <strong>s</strong>napshot of the current
+  <strong>p</strong>rocesses</dt>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-renice">cmd <strong><code>renice</code></strong></dfn>
+  alters priority of running processes</dt>
+<dd>Online resources:<ul>
+  <li><a href="https://man7.org/linux/man-pages/man1/renice.1.html"><code>man
+  renice(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/renice.8"><code>man renice(8)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><a href="#cmd-top"><dfn>cmd
+  <code class="heading">top</code></a></dfn>
+  displays processes</dt>
+<dd><br /></dd>
+</dl>
+</article>
+
+<article>
+<h1 id="103.7">Search Text Files Using Regular <span style="white-space:
+  nowrap">Expressions<sup><small>&#8201;&#8470;103.7</small></sup></span></h1>
+<dl>
+<dt><dfn id="cmd-grep">cmd <strong><code>grep</code></strong></dfn>
+  prints lines matching a pattern</dt>
+<dd id="cmd-egrep">cmd <strong><code>egrep</code></strong>
+  is <code>grep -E</code>.</dd>
+<dd id="cmd-fgrep">cmd <strong><code>fgrep</code></strong>
+  is <code>grep -F</code>.</dd>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/grep.1p.html">
+  <code>man grep(1p)</code></a> and
+  <a href="https://man7.org/linux/man-pages/man1/grep.1.html"><code>man
+  grep(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/grep.1"><code>man grep(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-sed">cmd <strong><code>sed</code></strong></dfn>
+  is the <strong>s</strong>tream <strong>ed</strong>itor for filtering and
+  transforming text</dt>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/sed.1p.html">
+  <code>man sed(1p)</code></a> and
+  <a href="https://man7.org/linux/man-pages/man1/sed.1.html"><code>man
+  sed(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/sed.1"><code>man sed(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="lang-regex"><strong>lang <code>regex</code></strong></dfn>
+  <em>i.&#8201;e.</em> <strong>Reg</strong>ular
+  <strong>Ex</strong>pressions</dt>
+<dd>Online resource:
+  <a href="https://man7.org/linux/man-pages/man7/regex.7.html"><code>man
+  regex(7)</code></a> at man7.org</dd>
+<dd><br /></dd>
+</dl>
+</article>
+
+<article>
+<h1 id="103.8">Basic File <span style="white-space:
+	nowrap">Editing<sup><small>&#8201;&#8470;103.8</small></sup></span></h1>
+<dl>
+<dt><dfn id="cmd-ed">cmd <strong><code>ed</code></strong></dfn>
+  is a line-oriented text <strong>ed</strong>itor</dt>
+<dd>Was one of the first parts of the Unix operating system developed by Ken
+  Thompson in August 1969.</dd>
+<dd>Remains part of the <a href="#std-posix"><code>POSIX</code></a> and
+  <code>Open Group</code> standards.</dd>
+<dd>Still useful for automation processes from <code>stdin</code>.</dd>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/ed.1p.html">
+  <code>man ed(1p)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/ed.1"><code>man ed(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-vi">cmd <strong><code>vi</code></strong></dfn>
+  is a screen-oriented (<strong>vi</strong>sual) display editor</dt>
+<dd>Nowadays often an <a href="#cmd-alias">alias</a> of (or <a
+  href="#cmd-ln">link</a> to) its 'successor' <a href="#cmd-vim">vim</a> on
+  many 'modern' desktop operating systems, but is part of <a
+  href="#std-posix"><code><strong>POSIX</strong>.1-2008</code></a> and can be
+  found on literally every system.</dd>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/vi.1p.html">
+  <code>man vi(1p)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/vi.1"><code>man vi(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-vim">cmd <strong><code>vim</code></strong></dfn>
+  is <strong><a href="#cmd-vi">vi</a> i</strong>mproved</dt>
+<dd><blockquote>
+  <a href="https://vimawesome.org">VIMawesome</a>, a plugin aggregator<br />
+  <a href="https://stackoverflow.com/questions/726894/">dark corners of vim</a>
+  <em>forum post at stackoverflow.com</em>
+  </blockquote></dd>
+<dd><br /></dd>
+  
+<dt><dfn id="cmd-emacs">cmd <strong><code>emacs</code></strong></dfn>
+  is an operating system by GNU Corp.</dt>
+<dd><q>.. it lacks a good editor, though.</q> (Thomer M. Gil), but there are
+  numerous efforts undertaken to integrate mature and sane solutions like
+  <code>vim</code>.</dd>
+<dd><a href="https://emacswiki.org/emacs/RepeatedStrainInjury">
+  Repetitve Strain Injury</a> entry in the EmacsWiki, stating that it is not
+  clear what causes it,
+  recommending foot switches for control keys and vi like key bindings.</dd>
+<dd><code>man emacs(1)</code> - <em>ah, no..</em> -
+  Emacs has its own manual system, called <code>info</code>(?) and a program
+  called <code>woman</code> within Emacs, short for
+  '<strong>w</strong>ith<strong>o</strong>ut <strong>man</strong>ual'
+  to not read manuals.</dd>
+<dd>Highlights: It has <a href="https://orgmode.org"><code>orgmode</code></a>,
+  the most brilliant calendaring and GTD tool in this spiral arm of our
+  home galaxy.</dd>
+<dd><br /></dd>
+
+<dt><dfn id="var-editor">var <strong><code>EDITOR</code></strong></dfn>
+  to not store <a href="#cmd-emacs"><code>emacs</code></a> in</dt>
+<dd>Environment variable to assign an editor of choice.</dd>
+<dd><br /></dd>
+</dl>
+
+<p>The assigned value to <code>EDITOR</code> (<em>i.&#8201;e.</em> ones choice
+  of an 'editor') <em>should</em> be executable inside a <code>shell</code> and
+  <em>should not</em> have too many dependencies.<br />
+  Important to some tools (like <a href="#cmd-sudo">sudo</a> and its derived
+  commands) as they rely on the default editor. <em>E.&#8201;g.</em>:</p>
+  <pre><code><span class="hl-cmt">$</span> <kbd>EDITOR="<span
+  class="hl-val">vi</span>"</span></kbd>
+<span class="hl-cmt">$</span> <kbd><span class="hl-key">echo</span> $<span
+  class="hl-var">EDITOR</span></kbd>
+<samp>vi</samp></code></pre>
+<p>Optionally include a qualified path (<em>e.&#8201;g.</em>
+  <kbd>EDITOR=${<span class="hl-var">HOME</span>}<span
+  class="hl-val">/.local/bin/vim</span></kbd>)
+  if the chosen <code>editor</code> cannot be found inside
+  <code>$PATH</code>
+  (<em>i.&#8201;e. installed somewhere else</em>).</p>
+<p>Optionally use <a href="#cmd-export"><code>export</code></a>)
+  (<em>e.&#8201;g.</em> <kbd><span class="hl-key">export</span>
+  EDITOR=<span class="hl-val">vi</span></kbd>)
+  to let the variable get inherited by every following command
+  (<em>e.&#8201;g. invoked subshells</em>).<br />
+  May be used with <a href="#cmd-env"><code>env</code></a> (*e.&#8201;g.*
+  <kbd><span class="hl-key">env</span> EDITOR=<span
+  class="hl-val">vim</span> <span class="hl-var">CMD</span></kbd>)
+  to let the variable value (possibly among others) be valid for a certain
+  command <span class="hl-var">CMD</span>.</p>
+<p id="cmd-edit">cmd <strong><code>edit</code></strong>
+  invokes the standard editor on most distributions, but the corresponding
+  systemwide <code>$EDITOR</code> can only be set by <code>root</code>
+<p id="var-visual">var <strong><code>VISUAL</code></strong> can also be set for
+  'visual' (<em>i.&#8201;e. non-line-oriented</em>) editors,
+  since <code>$EDITOR</code> originally was used to hold a line-oriented
+  editor (<em>e.&#8201;g.</em> <a href="#cmd-ed"><code>ed</code></a>)</p>
+</article>
+</section>
+
+<section>
+<h1 id="104">Devices, Filesystems, Filesystem Hierarchy <span style="white-space:
+	nowrap">Standard<sup><small>&#8201;&#8470;104</small></sup></span></h1>
+<hr />
+<article>
+<h1 id="104.1">Create Partitions and <span style="white-space:
+    nowrap">Filesystems<sup><small>&#8201;&#8470;104.1</small></sup></span></h1>
+
+<p>Important filesystems on Linux:
+<ul><li><strong>ext2</strong>/<strong>ext3</strong>/<strong>ext4</strong></li>
+  <li><strong>XFS</strong></li>
+  <li><strong>VFAT</strong></li>
+  <li><strong>exFAT</strong></li>
+  <li><strong>BtrFS</strong></li></ul></p>
+
+<dl>
+<dt><dfn id="cmd-fdisk">cmd <strong><code>fdisk</code></strong></dfn>
+  manipulates the disk partition table</dt>
+<dd id="cmd-gdisk"><ul><li>cmd <strong><code>gdisk</code></strong> is used to
+  handle GPTs (<strong>G</strong>UID <strong>p</strong>artition
+  <strong>t</strong>ables)</li></ul></dd>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man8/fdisk.8.html">
+  <code>man fdisk(8)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/fdisk.8"><code>man fdisk(8)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-parted">cmd <strong><code>parted</code></strong></dfn>
+  manipulates partitions too
+  <span class="anot"><sup><em><strong>&#8201;Linux</strong>
+  common</em></sup></span></dt>
+<dd>Part of the <a href="https://www.gnu.org/">GNU project</a>.</dd>
+<dd>Online resource:
+  <a href="https://man7.org/linux/man-pages/man8/parted.8.html"><code>man
+  parted(8)</code></a> at man7.org</dd>
+<dd><br /></dd>
+
+<div class="frame">
+<dt><dfn id="cmd-mkfs">cmd <strong><code>mkfs</code></strong></dfn>
+  builds a Linux file system<span 
+  class="anot"><sup><em><strong>&#8201;Linux</strong>
+  specific</em></sup></span></dt>
+<dd>Is deprecated in favour of:<ul>
+  <li id="cmd-mkfs.exfat">cmd <strong><code>mkfs.exfat</code></strong>, executed
+  as <code>mkexfatfs</code></li>
+  <li id="cmd-mkfs.ext2">cmd <strong><code>mkfs.ext2</code></strong>, executed
+  as <code><a href="#cmd-mke2fs">mke2fs</a> -t ext2</code></li>
+  <li id="cmd-mkfs.ext3">cmd <strong><code>mkfs.ext3</code></strong>, executed
+  as <code><a href="#cmd-mke2fs">mke2fs</a> -t ext3</code></li>
+  <li id="cmd-mkfs.ext4">cmd <strong><code>mkfs.ext4</code></strong>, executed
+  as <code><a href="#cmd-mke2fs">mke2fs</a> -t ext4</code></li>
+  <li id="cmd-mkfs.vfat">cmd <strong><code>mkfs.vfat</code></strong>, executed
+  as <code>mkfs.fat</code></li></ul>
+<dd>Online resources:
+  <a href="https://man7.org/linux/man-pages/man8/mkfs.fat.8.html"> <code>man
+  mkfs.fat(8)</code></a> and
+  <a href="https://man7.org/linux/man-pages/man8/mkfs.8.html"><code>man
+  mkfs(8)</code></a> at man7.org</dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-newfs">cmd <strong><code>newfs</code></strong></dfn>
+  constructs a new file system
+  <span class="anot"><sup><em><strong>&#8201;BSD</strong>
+  specific</em></sup></span></dt>
+<dd>Online resource:
+  <a href="https://man.netbsd.org/newfs.8"><code>man
+  newfs(8)</code></a> at man.NetBSD.org</dd>
+</div><br />
+
+<dt><dfn id="cmd-mkswap">cmd <strong><code>mkswap</code></strong></dfn>
+  sets up a Linux swap area
+  <span class="anot"><sup><em><strong>&#8201;Linux</strong>
+  specific</em></sup></span></dt>
+<dd>Online resource:
+  <a href="https://man7.org/linux/man-pages/man8/mkswap.8.html"><code>man
+  mkswap(8)</code></a> at man7.org</dd>
+</dl>
+</article>
+
+<article>
+<h1 id="104.2">Maintain the Integrity of <span style="white-space:
+	nowrap">Filesystems<sup><small>&#8201;&#8470;104.2</small></sup></span></h1>
+<dl>
+<dt><dfn id="cmd-du">cmd <strong><code>du</code></strong></dfn>
+  estimates file (<strong>d</strong>isk) space <strong>u</strong>sage</dt>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/du.1p.html">
+  <code>man du(1p)</code></a> and
+  <a href="https://man7.org/linux/man-pages/man1/du.1.html"><code>man
+  du(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/du.1"><code>man du(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-df">cmd <strong><code>df</code></strong></dfn>
+  displays <strong>f</strong>ree <strong>d</strong>isk space</dt>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/df.1p.html">
+  <code>man df(1p)</code></a> and
+  <a href="https://man7.org/linux/man-pages/man1/df.1.html"><code>man
+  df(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/df.1"><code>man df(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-fsck">cmd <strong><code>fsck</code></strong></dfn>
+  checks file system consistancy</dt>
+<dd>.. and optionally repairs interactively.</dd>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man8/fsck.8.html">
+  <code>man fsck(8)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/fsck.8"><code>man fsck(8)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-e2fsck">cmd <strong><code>e2fsck</code></strong></dfn>
+  checks an <strong>ext2</strong>/<strong>ext3</strong>/<strong>ext4</strong>
+  file system<span 
+  class="anot"><sup><em><strong>&#8201;Linux</strong> (fs)
+  specific</em></sup></span></dt>
+<dd>Online resource:
+  <a href="https://man7.org/linux/man-pages/man8/e2fsck.8.html"> <code>man
+  e2fsck(8)</code></a> at man7.org</dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-mke2fs">cmd <strong><code>mke2fs</code></strong></dfn>
+  creates an <strong>ext2</strong>/<strong>ext3</strong>/<strong>ext4</strong>
+  file system<span 
+  class="anot"><sup><em><strong>&#8201;Linux</strong> (fs)
+  specific</em></sup></span></dt>
+<dd>Online resource:
+  <a href="https://man7.org/linux/man-pages/man8/mke2fs.8.html"> <code>man
+  mke2fs(8)</code></a> at man7.org</dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-tune2fs">cmd <strong><code>tune2fs</code></strong></dfn>
+  adjusts <strong>tun</strong>abl<strong>e</strong> <strong>f</strong>ile
+  <strong>s</strong>ystem parameters<span 
+  class="anot"><sup><em><strong>&#8201;Linux</strong> (fs)
+  specific</em></sup></span></dt>
+<dd>.. on <strong>ext2</strong>/<strong>ext3</strong>/<strong>ext4</strong>
+  file systems.</dd>
+<dd>Online resource:
+  <a href="https://man7.org/linux/man-pages/man8/tune2fs.8.html"> <code>man
+  tune2fs(8)</code></a> at man7.org</dd>
+</dl>
+
+<p>Important commands regarding the <a href="#xfs">XFS</a> file system:<ul>
+<li id="cmd-xfs_repair">cmd <strong><code>xfs_repair</code></strong></li>
+<li id="cmd-xfs_fsr">cmd <strong><code>xfs_fsr</code></strong></li>
+<li id="cmd-xfs_db">cmd <strong><code>xfs_db</code></strong></li></ul><p>
+</article>
+
+<article>
+<h1 id="104.3"><bsd id="712.3"/>Control Mounting and Unmounting of
+    <span style="white-space:
+	nowrap">Filesystems<sup><small>&#8201;&#8470;104.3&#8201;&&#8201;&#8470;712.3</small></sup></span></h1>
+<dl>
+<dt><dfn id="file-fstab">file <code>/etc/<strong>fstab</strong>/</code></dfn>
+  is the <strong>f</strong>ile <strong>s</strong>ystem
+  <strong>tab</strong>le</dt>
+<dd>Holds static information about the file systems and their mount
+  points.</dt>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man5/fstab.5.html">
+  <code>man fstab(5)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/fstab.5"><code>man fstab(5)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+</dl>
+<p><em>Example for an </em> <code>fstab</code> <em>on a small private system
+  with UEFI boot, with a seperate /opt partition, a small ram drive and a
+  dynamic mount (partitions identified by <code>LABEL</code>)</em>:
+<pre><code><span class="hl-cmt"># file:  fstab(5)
+# brief: static file system information
+# -------------------------------------</span>
+<span class="hl-key">UUID</span>=C1D7-A93J    /boot/efi <span class="hl-key">vfat</span>  <span class="hl-var">umask</span>=<span class="hl-val">0077                       0 2</span>
+<span class="hl-key">LABEL</span>=SYSTEM      /         <span class="hl-key">ext4</span>  <span class="hl-var">errors</span>=<span class="hl-val">remount-ro</span>,<span class="hl-val">relatime</span>,<span class="hl-val">rw    0 1</span>
+<span class="hl-key">LABEL</span>=OPT         /opt      <span class="hl-key">ext4</span>  <span class="hl-val">relatime</span>,<span class="hl-val">rw                      0 2</span>
+<span class="hl-key">tmpfs</span>             /tmp      <span class="hl-key">tmpfs</span> <span class="hl-val">nodev</span>,<span class="hl-val">nosuid</span>,<span class="hl-val">relatime</span>,<span class="hl-val">rw</span>,<span class="hl-var">size</span>=<span class="hl-val">2g 0 0</span>
+<span class="hl-key">LABEL</span>=PERSISTENT  /mnt/pers <span class="hl-key">ext4</span>  <span class="hl-val">relatime</span>,<span class="hl-val">x-systemd.automount     0 2</span>
+<span class="hl-cmt"># EOF /etc/fstab ----------------------</span></code></pre><p>
+
+<dl>
+<dt><a href="#std-fhs"><dfn>dir
+  <code class="heading">/<strong>media</strong>/</code></a></dfn>
+  intended to contain subdirectories as mount points for removable media</dt>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-mount">cmd <strong><code>mount</code></strong></dfn>
+  mounts file systems</dt>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man8/mount.8.html">
+  <code>man mount(8)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/mount.8"><code>man mount(8)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-umount">cmd <strong><code>umount</code></strong></dfn>
+  unmounts file systems</dt>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man8/umount.8.html">
+  <code>man umount(8)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/umount.8"><code>man umount(8)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-blkid">cmd <strong><code>blkid</code></strong></dfn>
+  locates/prints <strong>bl</strong>oc<strong>k</strong> device attributes<span 
+  class="anot"><sup><em><strong>&#8201;Linux</strong>
+  specific</em></sup></span></dt>
+<dd>Interface to <code>libblkid(3)</code>.</dd>
+<dd>Online resource:
+  <a href="https://man7.org/linux/man-pages/man8/blkid.8.html"> <code>man
+  blkid(8)</code></a> at man7.org</dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-lsblk">cmd <strong><code>lsblk</code></strong></dfn>
+  <strong>l</strong>i<strong>s</strong>ts
+  <strong>bl</strong>oc<strong>k</strong> devices<span 
+  class="anot"><sup><em><strong>&#8201;Linux</strong>
+  specific</em></sup></span></dt>
+<dd>Reads from dir <code>/sys/dev/<strong>block</strong>/</code>.</dd>
+<dd>Online resource:
+  <a href="https://man7.org/linux/man-pages/man8/lsblk.8.html"> <code>man
+  lsblk(8)</code></a> at man7.org</dd>
+<dd><br /></dd>
+</dl>
+</article>
+
+<article>
+<h1 id="104.5"><bsd id="712.4"/>Manage File Permissions and
+    <span style="white-space:
+	nowrap">Ownership<sup><small>&#8201;&#8470;104.5&#8201;&&#8201;&#8470;712.4</small></sup></span></h1>
+<dl>
+<dt><dfn id="cmd-chmod">cmd <strong><code>chmod</code></strong></dfn>
+  <strong>ch</strong>anges file <strong>mod</strong>es</dt>
+<dd><em>AKA</em> access permissions in octal notation:</dd>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/chmod.1p.html">
+  <code>man chmod(1p)</code></a> and
+  <a href="https://man7.org/linux/man-pages/man1/chmod.1.html"><code>man
+  chmod(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/chmod.1"><code>man chmod(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+</dl>
+
+<h2>Determination of file (or directory) mode</h2>
+<p>Every file (or directory) has three octets (in raw Unix) defining
+  permissions:</p>
+<ul>
+<li>the 1<small>st</small> represents the owner of the file</li>
+<li>the 2<small>nd</small> its group</li>
+<li>the 3<small>rd</small> all others users in the universe</li>
+</ul>
+<p>Every of the three octets can be split into three binary digit positions:</p>
+<ul>
+<li>every binary position is either <code>1</code> or <code>0</code>
+  (<code>TRUE</code> or <code>FALSE</code>,
+  <code>YES</code> or <code>NO</code>)<br />
+</li>
+<li>a binary <code>100</code> translates to a <code>4</code> (octal)</li>
+<li>a binary <code>010</code> translates to a <code>2</code></li>
+<li>a binary <code>001</code> <em>translates</em> to a <code>1</code></li>
+</ul>
+<p>In Unix:</p>
+<ul>
+<li>the 1<small>st</small> position represents the right to read
+  (or list dir content)</li>
+<li>the 2<small>nd</small> position represents the right to write
+  (or change dir content)</li>
+<li>the 3<small>rd</small> position represents the right to execute
+  (or enter dir and see file attributes)</li>
+</ul>
+<p>Adding them gives the permission set.</p>
+<p><em>E.g. for a file with mode <code>754</code> (owner is allowed to do
+everything, group members are not allowed to write,
+others cannot even execute)</em>:</p>
+<table>
+<thead>
+<tr class="header">
+<th style="background: #201000"></th>
+<th>user</th>
+<th>group</th>
+<th>others</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1<small>st</small> position (read)</td>
+<td>1 <span class="hl-cmt">0 0 = 4<sub>oct</sub></td>
+<td>1 <span class="hl-cmt">0 0 = 4<sub>oct</sub></td>
+<td>1 <span class="hl-cmt">0 0 = 4<sub>oct</sub></td>
+</tr>
+<tr class="even">
+<td>2<small>nd</small> position (write)</td>
+<td>  1 <span class="hl-cmt">0 = 2<sub>oct</sub></td>
+<td>  0 <span class="hl-cmt">0 = 0<sub>oct</sub></td>
+<td>  0 <span class="hl-cmt">0 = 0<sub>oct</sub></td>
+</tr>
+<tr class="odd">
+<td>3<small>rd</small> position (exec)</td>
+<td>    1 <span class="hl-cmt">= 1<sub>oct</sub></td>
+<td>    1 <span class="hl-cmt">= 1<sub>oct</sub></td>
+<td>    0 <span class="hl-cmt">= 0<sub>oct</sub></td>
+</tr>
+<tr class="even">
+<td>sum (binary)</td>
+<td>1 1 1 = <strong>7</strong><sub>oct</sub></td>
+<td>1 0 1 = <strong>5</strong><sub>oct</sub></td>
+<td>1 0 0 = <strong>4</strong><sub>oct</sub></td>
+</tr>
+<tr class="odd">
+<td>logical (<strong>T</strong>rue/<strong>F</strong>alse)</td>
+<td>T T T</td>
+<td>T F T</td>
+<td>T F F</td>
+</tr>
+<tr class="even">
+<td><em>unixal</em></td>
+<td>r  w  x</td>
+<td>r - x</td>
+<td>r - -</td>
+</tr>
+</tbody>
+</table>
+<p>A somewhat reasonable default for self-written scripts.<br />
+For unpriviliged users even numbers like 644 (<code>rw-r--r--</code>) or
+640 are common, with just very few files having the execution bit set.</p>
+
+<dl>
+<dt><dfn id="cmd-umask">cmd <strong><code>umask</code></strong></dfn>
+  (gets or) sets the file mode creation mask</dt>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/umask.1p.html">
+  <code>man umask(1p)</code></a> and
+  <a href="https://man7.org/linux/man-pages/man2/umask.2.html"><code>man
+  umask(2)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/umask.2"><code>man umask(2)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-chmod">cmd <strong><code>chown</code></strong></dfn>
+  <strong>ch</strong>anges file <strong>own</strong>er and group</dt>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/chown.1p.html">
+  <code>man chown(1p)</code></a> and
+  <a href="https://man7.org/linux/man-pages/man1/chown.1.html"><code>man
+  chown(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/chown.8"><code>man chown(8)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-chmod">cmd <strong><code>chgrp</code></strong></dfn>
+  <strong>ch</strong>anges <strong>gr</strong>ou<strong>p</strong>
+  ownership</dt>
+<dd>Online resources:<ul><li>
+  <a href="https://man7.org/linux/man-pages/man1/chgrp.1.html"><code>man
+  chgrp(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/chgrp.1"><code>man chgrp(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+</dl>
+</article>
+
+<article>
+<h1 id="104.6">Create and Change Hard and Symbolic <span style="white-space:
+	nowrap">Links<sup><small>&#8201;&#8470;104.6</small></sup></span></h1>
+<dl>
+<dt><dfn id="cmd-ln">cmd <strong><code>ln</code></strong></dfn>
+  <strong>l</strong>i<strong>n</strong>ks files</dt>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/ln.1p.html">
+  <code>man ln(1p)</code></a> and
+  <a href="https://man7.org/linux/man-pages/man1/ln.1.html"><code>man
+  ln(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/ln.1"><code>man ln(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-ls">cmd <strong><code>ls</code></strong></dfn>
+  <strong>l</strong>i<strong>s</strong>ts directories</dt>
+<dd>With lots of options to format the output.<ul>
+  <li>synopsis on BSD:
+  <code>ls&nbsp;[-1AaBbCcdFfghikLlMmnOoPpqRrSsTtuWwXx]
+  [file ...]</code></li></ul></dd>
+<dd>On Linux mostly implemented as part of the <a
+  href="https://www.gnu.org/software/coreutils/">GNU core utilities</a>.</dd>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/ls.1p.html">
+  <code>man ls(1p)</code></a> and
+  <a href="https://man7.org/linux/man-pages/man1/ls.1.html"><code>man
+  ls(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/ls.1"><code>man ls(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+</dl>
+</article>
+
+<article>
+<h1 id="104.7">Find System Files and Place Files in the Correct
+    <span style="white-space:
+	nowrap">Location<sup><small>&#8201;&#8470;104.7</small></sup></span></h1>
+<dl>
+<dt><dfn id="cmd-find">cmd <strong><code>find</code></strong></dfn>
+  (an euphemism) searches for files in a directory hirarchy</dt>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/find.1p.html">
+  <code>man find(1p)</code></a> and
+  <a href="https://man7.org/linux/man-pages/man1/find.1.html"><code>man
+  find(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/find.1"><code>man find(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-locate">cmd <strong><code>locate</code></strong></dfn>
+  lists files in databases that match a pattern</dt>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/locate.1.html">
+  <code>man locate(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/locate.1"><code>man locate(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-updatedb">cmd <strong><code>updatedb</code></strong></dfn>
+  updates a file name database</dt>
+<dd>On BSDs: cmd <strong><code>/usr/libexec/locate.updatedb</code></strong></dd>
+<dd id="file-updatedb">Gets configured in file
+  <code>/etc/<strong>updatedb</strong>.conf</code>.</dd>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/updatedb.1.html">
+  <code>man updatedb(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/locate.updatedb.8"><code>man
+  locate.updatedb(8)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-whereis">cmd <strong><code>whereis</code></strong></dfn>
+  locates programs</dt>
+<dd>.., their corresponding sources and man-pages.</dd>
+<dd>Online resources:
+  <ul><li><a href="https://man7.org/linux/man-pages/man1/whereis.1.html">
+  <code>man whereis(1)</code></a> at man7.org</li>
+  <li><a href="https://man.netbsd.org/locate.whereis.1"><code>man
+  whereis(1)</code></a>
+  at man.NetBSD.org</li></ul></dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-which">cmd <strong><code>which</code></strong></dfn>
+  locates a command in the users <code>$PATH</code></dt>
+<dd><a href="#lang-shell"><code>shell builtin</code></a>.</dd>
+<dd>Option <code>-a</code> continues search after first find.</dd>
+<dd>Online resource:
+  <a href="https://man.netbsd.org/which.1"><code>man
+  which(1)</code></a> at man.NetBSD.org</dd>
+<dd><br /></dd>
+
+<dt><dfn id="cmd-type">cmd <strong><code>type</code></strong></dfn>
+  indicates how a given command would be interpreted</dt>
+<dd><a href="#lang-shell"><code>shell builtin</code></a>.</dd>
+<dd>Online resource:
+  <a href="https://man7.org/linux/man-pages/man1/type.1p.html"><code>man
+  type(1p)</code></a> at man7.org</dd>
+<dd><br /></dd>
+</dl>
+</article>
+
+<p><em>To be continued..</em></p>
+</body>  
+</html>

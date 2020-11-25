@@ -1,19 +1,20 @@
-/*file    : oystagony.css
-# brief   : Oyster White on Mahagony Brown Cascading Style Sheet
-# author  : (c) 2019 - 2020 Alexander Puls <https://0vv1.io>
-# ------------------------------------------------------------*/
+/*file:   oystagony.css
+# brief:  Oyster White on Mahagony Brown Cascading Style Sheet
+# author: (c) 2009 - 2020 Alexander Puls <https://0vv1.io>
+# ----------------------------------------------------------*/
 body {
 	background: #201000;
-	color: #cba;
+	color: #D7BFA7;
+	float: none !important; 
 	font: 12pt serif;
 	font-family: 'Segoe UI', 'Lucida Grande', Helvetica, sans-serif;
 	line-height: 1.5;
-	margin: 2em;
-	max-width: 100%;
+	margin: 2em auto !important;
+	max-width: 800px; 
+	padding: 1em;
 }
 a {
-	background: #201000;
-	color: #0af;
+	color: #0F87FF;
 	text-decoration: none;
 }
 a:focus, a:hover {
@@ -23,99 +24,253 @@ a:[href]:after {
     content: ' (' attr(href) ')';
 }
 a:visited {
-	color: #9aaccc;
+	color: #7FAFDF;
 	text-decoration: none;
 }
-article {
-    margin-bottom: 3em;
-}
 blockquote {
-	border-left: 5px solid #ccaa77;
-	margin: 1em;
-	padding: 0 1em;
+	border-left: 0.4em solid #7FAFDF;
+	border-radius: 0.0em 2.5em 0.3em 0.0em;
+	margin: 0.5em 0em;
+	margin-bottom: 1em;
+	margin-right: 1.4em;
+	max-width: inherit;
+	padding: 0.2em 1.4em 0.2em 1.1em;
+    page-break-inside: avoid;
 	background: #202020;
 }
-blockquote, ul, dl {
-    page-break-inside: avoid;
+blockquote pre {
+	margin: 0.7em 0em;
+	min-width: 100%;
+	padding-right: 0.5em;
 }
 code {
-	background: #301800;
+	background: #402000;
+	border-radius: 0.1em;
 	font-family: "Consolas", "Lucida Console", monospace;
-	padding: 1px 5px;
+	margin: 0em;
+	padding: 0.1em 0.2em 0.0em 0.2em;
+}
+header {
+	margin: 0em 0em;
+}
+dfn {
+	font-size: 1.2em;
+	font-style: normal;
+}
+dl {
+	margin: 0.3em;
+	padding-top: 1em;
+	padding-bottom: 1em;
+	padding-right: 0em;
+	margin-left: 3.8em;
+    page-break-inside: avoid;
 }
 dt {
-	font-weight: bold;
+	font-size: 1em;
+	font-variant: normal;
+	padding-top: 0.5em;
+	padding-left: 0.2em;
+	padding-right: 0.2em;
 }
-h1, h2, h3, h4, h5, h6 {
-	font-weight: normal;
-	line-height: 1em;
-	margin: 1em 0;
+    dt.beside {
+		float: left;
+		font-weight: bold;
+		margin-right: 0.5em;
+	}
+	dt:after.beside {
+		content: ":";
+	}
+dd {
+	margin-right: 3.8em;
+	padding-left: 1em;
+}
+dd:after.beside {
+        content: " ";
+	    clear: left;
+	    display: block;
+		margin-bottom: 0.8em;
 }
 h1 {
-	font-size: 2.25em;
+	font-weight: normal;
+	margin: 0em 0em 0.2em 0em;
 }
-h2 {
+section h1 {
 	font-size: 1.75em;
+	font-variant: small-caps;
+	margin: 0.7em 0em 0.3em;
 }
-h3 {
+article h1 {
 	font-size: 1.5em;
+	font-variant: normal;
+	font-weight: normal;
+	margin-top: 0.7em;
+	margin-bottom: 0.5em;
+}
+article h2 {
+	font-size: 1.3em;
+	font-weight: normal;
+	margin-top: 1.5em;
+	padding: 0.5em 0em 0em 0em;
+}
+article h3 {
+	font-size: 1em;
+	font-weight: normal;
+	margin: 0.5em 0em;
 }
 h4, h5, h6 {
 	font-size: 1.25em;
 }
 hr {
+	color: #cba;
 	background-color: #cba;
-	border: 0;
-	height: 1px;
+	height: auto;
 }
 img {
 	height: auto;
 }
+kbd {
+	background: #303030;
+	border-radius: 0.2em;
+	margin-right: 0em;
+	padding-top: 0.1em;
+	padding-left: 0.1em;
+	padding-right: 0.1em;
+	padding-bottom: 0em;
+}
+code kbd {
+	background: #202020;
+	padding-bottom: 0em;
+	padding-right: 0.1em;
+}
 li + li {
-	margin-top: 3px;
+	margin-top: 0.2em;
 }
 mark {
-	background: #859900;
+	background: #404040;
+	border-radius: 0.1em;
+    color: #ccaa77;
+	padding: 0em 0em 0em 0em;
 }
-pre {
-	background: #180c06;
-	padding: 5px 10px;
-	white-space: pre-wrap;
+p {
+	margin: 0em 0em 0em 0em; 
+	padding-top: 0.3em;
+	padding-bottom: 0.3em;
+	padding-left: 1.4em;
+	padding-right: 1.4em;
 }
-pre code, blockquote code {
-	background: #180c06;
-	padding: 0;
+pre code {
+	background: #100800;
+	border-color: #404040;
+	border-radius: 1em;
+	border-style: inset;
+	display: inline-block;
+	margin-left: 1.4em;
+	margin-right: 1.4em;
+	min-width: 61.8%;
+	padding: 0.3em 0.5em 0.3em 0.5em;
 }
-section {
-    margin-bottom: 3em;
+blockquote pre code, li pre code {
+	margin-left: 0em;
+	margin-right: 0em;
+	min-width: 100%;
 }
-strong {
+samp {
+	padding-right: 0.5em;
+}
+strong, {
+	color: #DFC7AF;
+}
+dd sup, li sup,  sup strong {
     color: #ccaa77;
 }
 sup {
-	color: #633d31;
+	color: #804000;
+	font-weight: normal;
 }
+table, th, td {
+	background: #303030;
+	border: solid #201000;
+    border-collapse: collapse;
+	font-family: "Consolas", "Lucida Console", monospace;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	margin-left: 1.4em;
+	margin-right: 1.4em;
+	padding-left: 1em;
+	padding-right: 1em;
+}
+
+ul {
+	margin: 0em;
+	padding-bottom: 0em;
+	padding-left: 3.8em;
+	padding-right: 1.4em;
+    page-break-inside: avoid;
+}
+    .fn-web {
+        font-size: x-small;
+	}
 /*  Original Style from ethanschoonover.com/solarized
 	(c) Jeremy Hull <sourdrums@gmail.com>
-    */
+    */ 
+    code.heading {
+	    background: inherit
+	}
+	.small {
+		font-size: smaller;
+	}
+	code.truncb {
+		border-radius: 1em 1em 0em 0em;
+		border-style: inset inset none inset;
+	}
+	code.truncrb {
+		border-radius: 1em 0em 0em 0em;
+		border-style: inset none none inset;
+	}
+	code.trunct {
+		border-radius: 0em 0em 1em 1em;
+		border-style: none inset inset inset;
+	}
+	code.trunctb {
+		border-radius: 0em 0em 0em 0em;
+		border-style: none inset none inset;
+	}
+	.frame {
+	    border-color: #804000;
+		border-style: dotted;
+		border-width: 0.1em;
+	}
+	span.anot {
+		float: right;
+	}
+    .hl-red,
+	.hl-freebsd {color: #AB2B28}
+	.hl-orange,
+	.hl-netbsd {color: #F26711}
+	.hl-yellow,
+	.hl-openbsd {color: #F2CA30}
+	.hl,
     .hljs {
-        display: block;
+        display: inline;
         overflow-x: auto;
         padding: 0.5em;
         background: #002b36;
         color: #839496;
     }
-    .hljs-comment,
+    .hl-cmt,
+	.hljs-comment,
     .hljs-quote {
 		color: #808080;
     }
     /* Green */
+	.hl-key,
     .hljs-keyword,
     .hljs-selector-tag,
     .hljs-addition {
         color: #859900;
     }
     /* Cyan */
+	.hl-val,
     .hljs-number,
     .hljs-string,
     .hljs-meta .hljs-meta-string,
@@ -125,6 +280,7 @@ sup {
 		color: #2aa198;
 	}
     /* Blue */
+	.hl-name,
     .hljs-title,
     .hljs-section,
     .hljs-name,
@@ -133,6 +289,7 @@ sup {
 		color: #268bd2;
     }
     /* Yellow */
+	.hl-var,
     .hljs-attribute,
     .hljs-attr,
     .hljs-variable,
@@ -142,6 +299,7 @@ sup {
         color: #b58900;
     }
     /* Orange */
+	.hl-op,
     .hljs-symbol,
     .hljs-bullet,
     .hljs-subst,
@@ -153,18 +311,22 @@ sup {
         color: #cb4b16;
     }
     /* Red */
+	.hl-mod,
     .hljs-built_in,
     .hljs-deletion {
         color: #dc322f;
     }
+	.hl-mark,
     .hljs-formula {
         background: #073642;
     }
+	.hl-em,
     .hljs-emphasis {
         font-style: italic;
     }
-    .hljs-strong {
+    .hl-strong,
+	.hljs-strong {
         font-weight: bold;
     }
 
-/*EOF oystagony.css ------------------------------------------*/
+/*EOF oystagony.css ----------------------------------------*/
